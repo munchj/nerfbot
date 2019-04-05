@@ -1,0 +1,45 @@
+{
+  "name": "nerfbot",
+  "version": "1.0.0",
+  "description": "Software for the nerf robot",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify index.js -o dist/bundle.js",
+    "watch": "watchify index.js -o dist/bundle.js -v",
+    "start": "node webserver.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/munchj/nerfbot.git"
+  },
+  "author": "Julien MUNCH",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/munchj/nerfbot/issues"
+  },
+  "homepage": "https://github.com/munchj/nerfbot#readme",
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "express": "^4.16.4",
+    "h264-live-player": "^1.3.1",
+    "jquery": "^3.3.1",
+    "nipplejs": "^0.8.1",
+    "watchify": "^3.11.1",
+    "ws": "^6.2.1"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
+    ]
+  }
+}

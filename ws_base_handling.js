@@ -118,7 +118,7 @@ class DriveManager {
             var speed = Math.abs(this.angularSpeed);
             for(let motor of Object.values(this.motors)) {
                 motor.setSpeed(speed);
-                if(motor.position.y == LEFT) {
+                if(motor.position.y == c.LEFT) {
                     motor.setDirection(this.angularSpeed > 0 ? c.FORWARD : c.BACKWARDS);
                 }
                 else {  //RIGHT 
@@ -131,7 +131,6 @@ class DriveManager {
             var directionX = this.linearSpeed > 0 ? c.FORWARD : c.BACKWARDS;
             var directionY = this.angularSpeed > 0 ? c.RIGHT : c.LEFT;
             var speedDifference = speed * Math.abs(this.angularSpeed) / c.HIGH * this.turnStrength;
-            console.log("case#4", speed, directionX, directionY, speedDifference);
             for(let motor of Object.values(this.motors)) {
                 motor.setDirection(directionX);
                 // the vehicle is going to turn in the direction where the motors are slower
@@ -154,7 +153,7 @@ const keepAliveManager = new KeepAliveManager(driveManager);
 
 wss.on('connection', function connection(ws) {
     ws.on('message', function incoming(message) {
-      console.log('received: %s', message);
+      //console.log('received: %s', message);
 
       try {
         var messageObject = JSON.parse(message);

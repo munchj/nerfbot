@@ -4,6 +4,8 @@
 module.exports = {
   MSG_PING: "ping",
   MSG_MOVE: "move",
+  MSG_MOVE_TURRET: "move_turret",
+  MSG_SHOOT: "shoot",
   MOTOR_FL: "motor_fl",
   MOTOR_FR: "motor_fr",
   MOTOR_BL: "motor_bl",
@@ -16,7 +18,7 @@ module.exports = {
   RIGHT: "right",
   HIGH: 255,
   LOW: 0,
-  TIMEOUT_MS: 100
+  TIMEOUT_MS: 200
 };
 
 },{}],2:[function(require,module,exports){
@@ -32,99 +34,99 @@ var c = require('./constants');
 
 var settings = require('./settings');
 
-console.log("test:", c.MSG_MOVE);
-var MSG_PING = "ping";
-var MSG_MOVE = "move";
-var MOTOR_FL = "motor_fl";
-var MOTOR_FR = "motor_fr";
-var MOTOR_BL = "motor_bl";
-var MOTOR_BR = "motor_br";
-var FORWARD = "fw";
-var BACKWARDS = "bw";
-var FRONT = "front";
-var BACK = "back";
-var LEFT = "left";
-var RIGHT = "right";
-var HIGH = 255;
-var LOW = 0;
-var TIMEOUT_MS = 100;
 var updateRate = 10; //number of updates by second
 
-var maxSpeed = 255;
-var keepAlive = 2000;
+var baseMinSpeed = 80;
+var maxSpeed = c.HIGH;
 var keyMapMovement = {
   'w': false,
   'a': false,
   's': false,
   'd': false
 };
-var keyMapVertical = {
+var keyMapTurret = {
   'i': false,
-  'k': false
-};
-var keyMapShooting = {
+  'k': false,
   'j': false,
   'l': false
+};
+var keyMapShooting = {
+  'u': false,
+  'o': false
 };
 var updateMap = {
   'speedX': 0,
   'speedY': 0
-};
-var lastCmdVertical;
-var lastCmdShooting; ///////////////////////////////////////////////
+}; ///////////////////////////////////////////////
 ////////////// websocket client  //////////////
 ///////////////////////////////////////////////
 
-var nerfbotServer = new WebSocket(settings.ws_base_handling);
+var nerfbotBaseServer = new WebSocket(settings.ws_base_handling);
+var nerfbotTurretServer = new WebSocket(settings.ws_turret_handling);
 
-nerfbotServer.onopen = function () {
+nerfbotBaseServer.onopen = function () {
   console.log("[WebSocket] connected");
-  $("#nerfbot_ws_status").text("connected to " + settings.ws_base_handling);
+  $("#nerfbot_base_ws_status").text("base connected to " + settings.ws_base_handling);
 };
 
-nerfbotServer.onerror = function (evt) {
+nerfbotBaseServer.onerror = function (evt) {
   console.log("[WebSocket] error");
-  $("#nerfbot_ws_status").text("communication error " + evt);
+  $("#nerfbot_base_ws_status").text("base communication error " + evt);
 };
 
-nerfbotServer.onclose = function () {
+nerfbotBaseServer.onclose = function () {
   console.log("[WebSocket] disconnected");
-  $("#nerfbot_ws_status").text("disconnected from " + settings.ws_base_handling);
+  $("#nerfbot_base_ws_status").text("base disconnected from " + settings.ws_base_handling);
 };
 
-var sendCommand = function sendCommand(command) {
-  if (nerfbotServer.readyState === nerfbotServer.OPEN) {
+nerfbotTurretServer.onopen = function () {
+  console.log("[WebSocket] connected");
+  $("#nerfbot_turret_ws_status").text("turret connected to " + settings.ws_turret_handling);
+};
+
+nerfbotTurretServer.onerror = function (evt) {
+  console.log("[WebSocket] error");
+  $("#nerfbot_turret_ws_status").text("turret communication error " + evt);
+};
+
+nerfbotTurretServer.onclose = function () {
+  console.log("[WebSocket] disconnected");
+  $("#nerfbot_turret_ws_status").text("turret disconnected from " + settings.ws_turret_handling);
+};
+
+var sendCommandToBase = function sendCommandToBase(command) {
+  if (nerfbotBaseServer.readyState === nerfbotBaseServer.OPEN) {
     //console.log("sending " + command);
-    nerfbotServer.send(command);
+    nerfbotBaseServer.send(command);
   } else {//console.log("[websocket offline] " + command);
   }
 };
 
-nerfbotServer.onmessage = function (event) {
-  console.log("[WebSocket] >>" + event.data);
-}; //////////////////////////////////////////////////
-////////////// keepalive management //////////////
-//////////////////////////////////////////////////
+var sendCommandToTurret = function sendCommandToTurret(command) {
+  if (nerfbotTurretServer.readyState === nerfbotTurretServer.OPEN) {
+    //console.log("sending " + command);
+    nerfbotTurretServer.send(command);
+  } else {//console.log("[websocket offline] " + command);
+  }
+};
 
-/*var fncKeepAlive = function() {
-	sendCommand("ka:"+ new Date().getTime());
-	setTimeout(fncKeepAlive, keepAlive);
-}
+nerfbotBaseServer.onmessage = function (event) {//console.log("[WebSocket] >>" + event.data);
+};
 
-$(document).ready(fncKeepAlive);*/
+nerfbotTurretServer.onmessage = function (event) {} //console.log("[WebSocket] >>" + event.data);
 ///////////////////////////////////////////////////////
 ////////////// send packets to websocket //////////////
 ///////////////////////////////////////////////////////
-
+;
 
 function wsUpdate() {
   var obj = {
-    type: MSG_MOVE,
+    type: c.MSG_MOVE,
     linearSpeed: updateMap.speedX,
     angularSpeed: updateMap.speedY
   };
   $("#nerfbot_horizontal_movement").text("speedX:" + updateMap.speedX + " speedY:" + updateMap.speedY);
-  sendCommand(JSON.stringify(obj));
+  sendCommandToBase(JSON.stringify(obj));
   setTimeout(wsUpdate, 1000 / updateRate);
 }
 
@@ -135,25 +137,21 @@ function horizontalMove(speedX, speedY) {
   updateMap.speedY = speedY;
 }
 
-function verticalMove(speed) {
-  var cmdVertical = "vm:" + speed;
-
-  if (cmdVertical != lastCmdVertical || cmdVertical == 'vm:0') {
-    sendCommand(cmdVertical);
-    $("#nerfbot_vertical_movement").text(speed);
-  }
-
-  lastCmdVertical = cmdVertical;
+function moveTurret(speedX, speedY) {
+  var obj = {
+    type: c.MSG_MOVE_TURRET,
+    speedX: speedX,
+    speedY: speedY
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+  $("#nerfbot_vertical_movement").text("speedX:" + speedX + " speedY:" + speedY);
 }
 
 function shoot(speed) {
-  var cmdShooting = "sh:" + speed;
-
-  if (cmdShooting != lastCmdShooting) {
-    sendCommand(cmdShooting);
-  }
-
-  lastCmdShooting = cmdShooting;
+  var obj = {
+    type: c.MSG_SHOOT
+  };
+  sendCommandToTurret(JSON.stringify(obj));
 } //////////////////////////////////////////////////
 ////////////// keyboard management ///////////////
 //////////////////////////////////////////////////
@@ -214,43 +212,66 @@ var fcnHandleMapChangeMovement = function fcnHandleMapChangeMovement() {
   }
 };
 
-var fcnHandleMapChangeVertical = function fcnHandleMapChangeVertical() {
-  if (keyMapVertical.i) {
-    verticalMove(100);
+var fcnHandleMapChangeTurret = function fcnHandleMapChangeTurret() {
+  if (keyMapTurret.i && keyMapTurret.k) {
     return;
   }
 
-  if (keyMapVertical.k) {
-    verticalMove(-100);
+  if (keyMapTurret.j && keyMapTurret.k) {
     return;
   }
 
-  if (!keyMapVertical.i && !keyMapVertical.k) {
-    verticalMove(0);
+  if (keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) {
+    moveTurret(maxSpeed, 0);
+    return;
+  }
+
+  if (keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) {
+    moveTurret(maxSpeed, -maxSpeed);
+    return;
+  }
+
+  if (keyMapTurret.i && !keyMapTurret.j && keyMapTurret.l) {
+    moveTurret(maxSpeed, maxSpeed);
+    return;
+  }
+
+  if (keyMapTurret.k && !keyMapTurret.j && !keyMapTurret.l) {
+    moveTurret(-maxSpeed, 0);
+    return;
+  }
+
+  if (keyMapTurret.k && keyMapTurret.j && !keyMapTurret.l) {
+    moveTurret(-maxSpeed, -maxSpeed);
+    return;
+  }
+
+  if (keyMapTurret.k && !keyMapTurret.j && keyMapTurret.l) {
+    moveTurret(-maxSpeed, maxSpeed);
+    return;
+  }
+
+  if (keyMapTurret.j) {
+    moveTurret(0, -maxSpeed);
+    return;
+  }
+
+  if (keyMapTurret.l) {
+    moveTurret(0, maxSpeed);
+    return;
+  }
+
+  if (!keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.k && !keyMapTurret.l) {
+    moveTurret(0, 0);
     return;
   }
 };
 
-var fcnHandleMapChangeShooting = function fcnHandleMapChangeShooting() {
-  if (keyMapShooting.j) {
-    shoot(100);
-    return;
-  }
-
-  if (keyMapShooting.l) {
-    shoot(100);
-    return;
-  }
-
-  if (!keyMapShooting.j && !keyMapShooting.l) {
-    shoot(0);
-    return;
-  }
-};
+var fcnHandleMapChangeShooting = function fcnHandleMapChangeShooting() {};
 
 $(document).keyup(function (event) {
   var oldMapMovement = JSON.stringify(keyMapMovement);
-  var oldMapVertical = JSON.stringify(keyMapVertical);
+  var oldMapVertical = JSON.stringify(keyMapTurret);
   var oldMapShooting = JSON.stringify(keyMapShooting);
 
   switch (event.key) {
@@ -271,19 +292,19 @@ $(document).keyup(function (event) {
       break;
 
     case 'i':
-      keyMapVertical.i = false;
+      keyMapTurret.i = false;
       break;
 
     case 'j':
-      keyMapShooting.j = false;
+      keyMapTurret.j = false;
       break;
 
     case 'k':
-      keyMapVertical.k = false;
+      keyMapTurret.k = false;
       break;
 
     case 'l':
-      keyMapShooting.l = false;
+      keyMapTurret.l = false;
       break;
 
     default:
@@ -293,7 +314,7 @@ $(document).keyup(function (event) {
   }
 
   var newMapMovement = JSON.stringify(keyMapMovement);
-  var newMapVertical = JSON.stringify(keyMapVertical);
+  var newMapVertical = JSON.stringify(keyMapTurret);
   var newMapShooting = JSON.stringify(keyMapShooting);
 
   if (newMapMovement != oldMapMovement) {
@@ -301,7 +322,7 @@ $(document).keyup(function (event) {
   }
 
   if (newMapVertical != oldMapVertical) {
-    fcnHandleMapChangeVertical();
+    fcnHandleMapChangeTurret();
   }
 
   if (newMapShooting != oldMapShooting) {
@@ -310,7 +331,7 @@ $(document).keyup(function (event) {
 });
 $(document).keydown(function (event) {
   var oldMapMovement = JSON.stringify(keyMapMovement);
-  var oldMapVertical = JSON.stringify(keyMapVertical);
+  var oldMapTurret = JSON.stringify(keyMapTurret);
   var oldMapShooting = JSON.stringify(keyMapShooting);
 
   switch (event.key) {
@@ -331,19 +352,19 @@ $(document).keydown(function (event) {
       break;
 
     case 'i':
-      keyMapVertical.i = true;
+      keyMapTurret.i = true;
       break;
 
     case 'j':
-      keyMapShooting.j = true;
+      keyMapTurret.j = true;
       break;
 
     case 'k':
-      keyMapVertical.k = true;
+      keyMapTurret.k = true;
       break;
 
     case 'l':
-      keyMapShooting.l = true;
+      keyMapTurret.l = true;
       break;
 
     default:
@@ -353,15 +374,15 @@ $(document).keydown(function (event) {
   }
 
   var newMapMovement = JSON.stringify(keyMapMovement);
-  var newMapVertical = JSON.stringify(keyMapVertical);
+  var newMapVertical = JSON.stringify(keyMapTurret);
   var newMapShooting = JSON.stringify(keyMapShooting);
 
   if (newMapMovement != oldMapMovement) {
     fcnHandleMapChangeMovement();
   }
 
-  if (newMapVertical != oldMapVertical) {
-    fcnHandleMapChangeVertical();
+  if (newMapVertical != oldMapTurret) {
+    fcnHandleMapChangeTurret();
   }
 
   if (newMapShooting != oldMapShooting) {
@@ -374,19 +395,31 @@ $(document).keydown(function (event) {
 var readjustSpeed = function readjustSpeed(speed) {
   var tmp = 0;
 
-  if (speed <= 20 && speed >= -20) {
+  if (speed <= 10 && speed >= -10) {
     tmp = 0;
-  } else if (speed > 20) {
-    tmp = (speed - 20) * maxSpeed / 80;
-  } else if (speed < -20) {
-    tmp = (speed + 20) * maxSpeed / 80;
+  } else if (speed > 10) {
+    tmp = (speed - 10) * maxSpeed / 90;
+  } else if (speed < -10) {
+    tmp = (speed + 10) * maxSpeed / 90;
   }
 
   return Math.round(tmp);
 };
 
+var remapBaseSpeed = function remapBaseSpeed(speed) {
+  var delta = maxSpeed - baseMinSpeed;
+
+  if (speed > 0) {
+    return Math.round(baseMinSpeed + speed / maxSpeed * delta);
+  } else if (speed < 0) {
+    return Math.round(-baseMinSpeed + speed / maxSpeed * delta);
+  }
+
+  return 0;
+};
+
 $(document).ready(function () {
-  var movementOptions = {
+  var driveOptions = {
     zone: document.getElementById('nerfbot_video_bottom_left'),
     mode: "static",
     position: {
@@ -396,41 +429,43 @@ $(document).ready(function () {
     color: "red"
   };
 
-  var movementManager = _nipplejs["default"].create(movementOptions);
+  var driveManager = _nipplejs["default"].create(driveOptions);
 
-  movementManager.get(0).on("move", function (evt, data) {
+  driveManager.get(0).on("move", function (evt, data) {
     var speed = data.distance * 2;
     var speedX = speed * Math.sin(data.angle.radian);
     var speedY = speed * Math.cos(data.angle.radian); //avoid moving immediately
 
-    speedX = readjustSpeed(speedX);
-    speedY = readjustSpeed(speedY);
+    speedX = remapBaseSpeed(readjustSpeed(speedX));
+    speedY = remapBaseSpeed(readjustSpeed(speedY));
     horizontalMove(speedX, speedY);
   });
-  movementManager.get(0).on("end", function (evt) {
+  driveManager.get(0).on("end", function (evt) {
     horizontalMove(0, 0);
   });
-  var verticalOptions = {
+  var turretOptions = {
     zone: document.getElementById('nerfbot_video_bottom_right'),
     mode: "static",
     position: {
       bottom: 80,
       right: 80
     },
-    color: "lightblue",
-    lockX: true
+    color: "lightblue" //lockX: true
+
   };
 
-  var verticalManager = _nipplejs["default"].create(verticalOptions);
+  var turretManager = _nipplejs["default"].create(turretOptions);
 
-  verticalManager.get(1).on("move", function (evt, data) {
+  turretManager.get(1).on("move", function (evt, data) {
     var speed = data.distance * 2;
     var speedX = speed * Math.sin(data.angle.radian);
+    var speedY = speed * Math.cos(data.angle.radian);
     speedX = readjustSpeed(speedX);
-    verticalMove(speedX);
+    speedY = readjustSpeed(speedY);
+    moveTurret(speedX, speedY);
   });
-  verticalManager.get(1).on("end", function (evt) {
-    verticalMove(0);
+  turretManager.get(1).on("end", function (evt) {
+    moveTurret(0, 0);
   });
 });
 
@@ -480,6 +515,10 @@ window.initCameraStreams = function () {
   stream_01.ws.onerror = function (ev) {//console.log(ev);
   };
 
+  stream_01.ws.onopen = function (ev) {
+    stream_01.playStream();
+  };
+
   var stream_02_canvas = document.getElementById("stream_02");
   var stream_02 = new WSAvcPlayer(stream_02_canvas, "webgl", 1, 35);
   stream_02.connect(settings.ws_turret_camera);
@@ -488,10 +527,9 @@ window.initCameraStreams = function () {
   stream_02.ws.onerror = function (ev) {//console.log(ev);
   };
 
-  setTimeout(function () {
-    stream_01.playStream();
+  stream_02.ws.onopen = function (ev) {
     stream_02.playStream();
-  }, 1000);
+  };
 };
 
 $(document).ready(function () {

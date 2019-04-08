@@ -15,11 +15,18 @@
 }
 
 #nerfbot_stats {
+	background-color: #333333;
 	color: white;
-	width: 300px;
+	font-size: 28px;
+	width: 34%;
+	height: 48%;
 	position: absolute;
-	bottom: 80px;
-	left: 200px;
+	bottom: 0;
+	right: 0;
+}
+
+#nerfbot_stats > div {
+	padding: 20px;
 }
 
 #nerfbot_video_bottom_left
@@ -53,12 +60,11 @@ body {
 }
 
 .stream {
-	
+	position:fixed;
 }
 
 #stream_01 {
 	width:66%;
-	position:fixed;
 	bottom:0;
 	left:0;
 	border-top:1px solid white;
@@ -67,7 +73,6 @@ body {
 
 #stream_02 {
 	width:34%;
-	position:fixed;
 	top:0;
 	right:0;
 	background-color:black;

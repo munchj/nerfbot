@@ -1,6 +1,8 @@
 module.exports = {
     MSG_PING : "ping",
     MSG_MOVE : "move",
+    MSG_MOVE_TURRET : "move_turret",
+    MSG_SHOOT : "shoot",
     
     MOTOR_FL : "motor_fl",
     MOTOR_FR : "motor_fr",
@@ -18,6 +20,6 @@ module.exports = {
     HIGH : 255,
     LOW : 0,
     
-    TIMEOUT_MS : 100
+    TIMEOUT_MS : 200
 };
 

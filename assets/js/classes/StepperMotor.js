@@ -38,7 +38,7 @@ module.exports = class StepperMotor {
     setDirection(direction) {
         //console.log(this.name + " setDirection " + direction);
         if(pigpioOK) {
-            this.gpio.dir.writeDigital(direction==c.FORWARD?1:0);
+            this.gpio.dir.digitalWrite(direction==c.FORWARD?1:0);
         }
         this.currentDirection = direction;
 

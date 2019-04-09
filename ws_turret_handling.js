@@ -1,5 +1,6 @@
 const c = require('./assets/js/constants');
 const settings = require('./assets/js/settings');
+const StepperMotorWrapper = require('./assets/js/classes/StepperMotorWrapper');
 
 const WebSocket = require('ws');
 
@@ -17,7 +18,7 @@ catch(e) {
 
 const wss = new WebSocket.Server({ port: 1339 });
 
-
+const tiltStepper = new StepperMotorWrapper(settings.ws_tilt_stepper_port);
 
 
 wss.on('connection', function connection(ws) {
@@ -30,7 +31,9 @@ wss.on('connection', function connection(ws) {
 
         if(messageObject.type == c.MSG_MOVE_TURRET) {
             console.log(messageObject.type, messageObject.speedX, messageObject.speedY);
-
+            tiltStepper.setDirection(messageObject.speedX >= 0 ? c.FORWARD :c.BACKWARDS);
+            tiltStepper.setSpeed( Math.abs(messageObject.speedX));
+            tiltStepper.rotate();
         }
         ws.send("ok");
       }

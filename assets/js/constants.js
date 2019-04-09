@@ -4,6 +4,11 @@ module.exports = {
     MSG_MOVE_TURRET : "move_turret",
     MSG_SHOOT : "shoot",
     MSG_TEST_MOTORS : "test_motors",
+
+
+    MSG_ROTATE : "rotate",
+    MSG_SET_SPEED: "set_speed",
+    MSG_SET_DIRECTION: "set_direction",
     
     MOTOR_FL : "motor_fl",
     MOTOR_FR : "motor_fr",

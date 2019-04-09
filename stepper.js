@@ -35,13 +35,13 @@ class StepperMotor {
     }
 
     setDirection(direction) {
-        console.log(nthis.name + " setDirection " + direction);
+        console.log(this.name + " setDirection " + direction);
         this.currentDirection = direction;
 
     }
 
     setSpeed(speed) {
-        console.log(nthis.name + " setsetSpeed " + speed);
+        console.log(this.name + " setsetSpeed " + speed);
         this.currentSpeed = speed;
     }
 

@@ -41,7 +41,7 @@ class StepperMotor {
     }
 
     setSpeed(speed) {
-        console.log(this.name + " setsetSpeed " + speed);
+        console.log(this.name + " setSpeed " + speed);
         this.currentSpeed = speed;
     }
 
@@ -64,6 +64,7 @@ class StepperMotor {
 
     //keeps rotating until speed is set to 0
     rotate() {
+        console.log("rotate");
         var myStepper = this;
         this.worker = new Worker(function() {
             var rpt = function() {

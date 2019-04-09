@@ -66,28 +66,26 @@ class StepperMotor {
     //keeps rotating until speed is set to 0
     rotate() {
         console.log("rotate");
-        var myStepper = this;
-        this.worker = new Worker(function() {
-            console.log("worker create");
-            var rpt = function() {
-                return this.speed > 0;
-            }
-    
-            this.onmessage = function(event) {
-                console.log("worker.onmessage" + event);
-                myStepper.multiStep(38, 100, rpt);
-               
-            };
-              
-           
-        });
-
+        var rpt = function() {
+            return this.speed > 0;
+        }
+        this.multiStep(38, 100, rpt);
     }
 }
 
 
+var stepperWorker = new Worker(function() {
+    console.log("worker create");
+    var stepper = new StepperMotor("tilt", 17, 27, 22);
+    stepper.setSpeed(10);
+    
 
-var stepper = new StepperMotor("tilt", 17, 27, 22);
-stepper.setSpeed(10);
-stepper.rotate();
-stepper.worker.postMessage("m_rotate");
+    this.onmessage = function(event) {
+        console.log("worker.onmessage" + event);
+        stepper.rotate();
+       
+    };
+});
+
+
+stepperWorker.postMessage("m_rotate");

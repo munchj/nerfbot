@@ -97,7 +97,7 @@ module.exports = class StepperMotor {
         }
         
 
-        console.log("step [" + this.relativeSteps + "]")
+        //console.log("step [" + this.relativeSteps + "]")
     }
 
     multiStep(microseconds, n, repeat) {

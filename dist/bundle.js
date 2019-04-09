@@ -6,6 +6,7 @@ module.exports = {
   MSG_MOVE: "move",
   MSG_MOVE_TURRET: "move_turret",
   MSG_SHOOT: "shoot",
+  MSG_TEST_MOTORS: "test_motors",
   MOTOR_FL: "motor_fl",
   MOTOR_FR: "motor_fr",
   MOTOR_BL: "motor_bl",
@@ -63,6 +64,8 @@ var updateMap = {
 
 var nerfbotBaseServer = new WebSocket(settings.ws_base_handling);
 var nerfbotTurretServer = new WebSocket(settings.ws_turret_handling);
+window.nerfbotBaseServer = nerfbotBaseServer;
+window.nerfbotTurretServer = nerfbotTurretServer;
 
 nerfbotBaseServer.onopen = function () {
   console.log("[WebSocket] connected");

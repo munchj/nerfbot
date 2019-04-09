@@ -37,6 +37,9 @@ module.exports = class StepperMotor {
 
     setDirection(direction) {
         //console.log(this.name + " setDirection " + direction);
+        if(pigpioOK) {
+            this.gpio.dir.writeDigital(direction==c.FORWARD?1:0);
+        }
         this.currentDirection = direction;
 
     }
@@ -118,6 +121,6 @@ module.exports = class StepperMotor {
             }
             return stepper.currentSpeed > 0;
         }
-        this.multiStep(38, 120, rpt);
+        this.multiStep(38, 100, rpt);
     }
 }

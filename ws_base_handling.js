@@ -34,9 +34,12 @@ class Motor {
             this.gpio.direction_02 = new Gpio(this.pins.direction_02, {mode: Gpio.OUTPUT});
         }
 
+        this.currentSpeed = 0;
+        this.currentDirection = 0
     }
 
     setDirection(direction) {
+        this.currentDirection = direction;
         //console.log("Motor::",this.name, "::setDirection::", direction);
         if(pigpioOK) {
             if(direction == c.FORWARD) {
@@ -52,6 +55,7 @@ class Motor {
 
     setSpeed(speed) {
         speed = Math.floor(speed);
+        this.currentSpeed = speed;
         //if(speed != 0) {
         //    console.log("Motor::",this.name, "::setSpeed::", speed);
         //}
@@ -59,6 +63,10 @@ class Motor {
         if(pigpioOK) {
             this.gpio.speed.pwmWrite(speed);
         }
+    }
+
+    printDirection() {
+        return this.direction==c.FORWARD?"↑":"↓";
     }
 }
 
@@ -135,19 +143,25 @@ class DriveManager {
             var nDirectionX = this.linearSpeed > 0 ? c.BACKWARDS : c.FORWARD;
             var directionY = this.angularSpeed > 0 ? c.RIGHT : c.LEFT;
             var speedDifference = speed * Math.abs(this.angularSpeed) / c.HIGH * this.turnStrength;
-            var dbg = "motor:speeed:direction ";
+
             for(let motor of Object.values(this.motors)) {
                 let lDirection = motor.position.y == directionY ? directionX:nDirectionX;
                 let lSpeed = motor.position.y == directionY ? (speedDifference) : speed;
                 motor.setDirection(lDirection);
                 motor.setSpeed(lSpeed);
-                dbg = dbg + " " + motor.name + ":" + lSpeed + ":" + lDirection;
+
             }
-            if(speed > 0) {
-                console.log(dbg);
-            }
+
             
         }
+
+        if(linearSpeed != 0) {
+            console.log("-------------");
+            console.log(this.motors[c.MOTOR_FL].currentSpeed + " " + this.motors[c.MOTOR_FL].printDirection() + "    " + + this.motors[c.MOTOR_FR].printDirection() + " " + this.motors[c.MOTOR_FR].currentSpeed);
+            console.log(this.motors[c.MOTOR_BL].currentSpeed + " " + this.motors[c.MOTOR_BL].printDirection() + "    " + + this.motors[c.MOTOR_BR].printDirection() + " " + this.motors[c.MOTOR_BL].currentSpeed);
+            console.log("-------------");
+        }
+
     }
 }
 

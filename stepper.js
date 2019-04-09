@@ -74,11 +74,12 @@ class StepperMotor {
             }
     
             this.onmessage = function(event) {
-                console.log(event);
-                self.close();
+                console.log("worker.onmessage" + event);
+                myStepper.multiStep(38, 100, rpt);
+               
             };
               
-            myStepper.multiStep(38, 100, rpt);
+           
         });
 
     }
@@ -89,4 +90,4 @@ class StepperMotor {
 var stepper = new StepperMotor("tilt", 17, 27, 22);
 stepper.setSpeed(10);
 stepper.rotate();
-stepper.worker.postMessage("rotate");
+stepper.worker.postMessage("m_rotate");

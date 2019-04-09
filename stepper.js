@@ -89,3 +89,4 @@ class StepperMotor {
 var stepper = new StepperMotor("tilt", 17, 27, 22);
 stepper.setSpeed(10);
 stepper.rotate();
+stepper.worker.postMessage("rotate");

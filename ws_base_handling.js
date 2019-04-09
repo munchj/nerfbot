@@ -39,7 +39,7 @@ class Motor {
     setDirection(direction) {
         //console.log("Motor::",this.name, "::setDirection::", direction);
         if(pigpioOK) {
-            if(direction == FORWARD) {
+            if(direction == c.FORWARD) {
                 this.gpio.direction_01.pwmWrite(HIGH);
                 this.gpio.direction_02.pwmWrite(LOW);
             }

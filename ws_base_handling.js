@@ -132,12 +132,13 @@ class DriveManager {
         else { //combination of linear and angular speed, compute a differential speed between left wheels train and right wheels train
             var speed = Math.abs(this.linearSpeed);
             var directionX = this.linearSpeed > 0 ? c.FORWARD : c.BACKWARDS;
+            var nDirectionX = this.linearSpeed > 0 ? c.BACKWARDS : c.FORWARD;
             var directionY = this.angularSpeed > 0 ? c.RIGHT : c.LEFT;
             var speedDifference = speed * Math.abs(this.angularSpeed) / c.HIGH * this.turnStrength;
             for(let motor of Object.values(this.motors)) {
-                motor.setDirection(directionX);
+                motor.setDirection(motor.position.y == directionY ? directionX:nDirectionX);
                 // the vehicle is going to turn in the direction where the motors are slower
-                motor.setSpeed(motor.position.y == directionY ? (-speedDifference) : speed);
+                motor.setSpeed(motor.position.y == directionY ? (speedDifference) : speed);
             }
         }
     }

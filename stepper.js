@@ -53,6 +53,7 @@ class StepperMotor {
     }
 
     multiStep(microseconds, n, repeat) {
+        console.log("multistep");
         for(let i=0;i<n;i++) {
             this.step(microseconds);
         }
@@ -67,6 +68,7 @@ class StepperMotor {
         console.log("rotate");
         var myStepper = this;
         this.worker = new Worker(function() {
+            console.log("worker create");
             var rpt = function() {
                 return this.speed > 0;
             }
@@ -74,8 +76,9 @@ class StepperMotor {
             this.onmessage = function(event) {
                 console.log(event);
                 self.close();
-              };
-              myStepper.multiStep(38, 100, rpt);
+            };
+              
+            myStepper.multiStep(38, 100, rpt);
         });
 
     }

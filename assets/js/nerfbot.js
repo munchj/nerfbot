@@ -20,6 +20,9 @@ var updateMap = {'speedX':0, 'speedY': 0};
 var nerfbotBaseServer = new WebSocket(settings.ws_base_handling);
 var nerfbotTurretServer = new WebSocket(settings.ws_turret_handling);
 
+window.nerfbotBaseServer = nerfbotBaseServer;
+window.nerfbotTurretServer = nerfbotTurretServer;
+
 nerfbotBaseServer.onopen = function() {
 	console.log("[WebSocket] connected");
 	$("#nerfbot_base_ws_status").text("base connected to " + settings.ws_base_handling);

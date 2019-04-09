@@ -84,7 +84,7 @@ class DriveManager {
         console.log("DriveManager::constructor");
         this.linearSpeed = 0;
         this.angularSpeed = 0;
-        this.turnStrength = 0.8; // [0 - 1]
+        this.turnStrength = 0.3; // [0 - 1]
         this.motors = {};
         this.motors[c.MOTOR_FL] = motorFL;
         this.motors[c.MOTOR_FR] = motorFR;
@@ -137,7 +137,7 @@ class DriveManager {
             for(let motor of Object.values(this.motors)) {
                 motor.setDirection(directionX);
                 // the vehicle is going to turn in the direction where the motors are slower
-                motor.setSpeed(motor.position.y == directionY ? (speed - 2*speedDifference) : speed);
+                motor.setSpeed(motor.position.y == directionY ? (-speedDifference) : speed);
             }
         }
     }

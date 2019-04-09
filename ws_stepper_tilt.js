@@ -9,8 +9,8 @@ const wss = new WebSocket.Server({ port: settings.ws_tilt_stepper_port });
 
 const stepperMotor = new StepperMotor("tilt", 17, 27, 22);
 stepperMotor.setSpeed(1);
-stepperMotor.setForwardSwitch(1000);
-stepperMotor.setBackwardsSwitch(-1000);
+stepperMotor.setForwardSwitch(100000);
+stepperMotor.setBackwardsSwitch(-100000);
 
 wss.on('connection', function connection(ws) {
     ws.on('message', function incoming(message) {

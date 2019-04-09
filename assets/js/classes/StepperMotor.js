@@ -36,13 +36,13 @@ module.exports = class StepperMotor {
     }
 
     setDirection(direction) {
-        console.log(this.name + " setDirection " + direction);
+        //console.log(this.name + " setDirection " + direction);
         this.currentDirection = direction;
 
     }
 
     setSpeed(speed) {
-        console.log(this.name + " setSpeed " + speed);
+        //console.log(this.name + " setSpeed " + speed);
         this.currentSpeed = speed;
     }
 
@@ -56,13 +56,13 @@ module.exports = class StepperMotor {
 
     isForwardSwitchTriggered() {
         let b = this.currentDirection == c.FORWARD && this.relativeSteps >= this.forwardSwitch;
-        console.log("isForwardSwitchTriggered " + b);
+        //console.log("isForwardSwitchTriggered " + b);
         return b;
     }
 
     isBackwardsSwitchTriggered() {
         let b = this.currentDirection == c.BACKWARDS && this.relativeSteps <= this.backwardsSwitch;
-        console.log("isBackwardsSwitchTriggered " + b);
+        //console.log("isBackwardsSwitchTriggered " + b);
         return b;
     }
 
@@ -70,13 +70,13 @@ module.exports = class StepperMotor {
         if(this.enableSwitches) {
             if(this.isForwardSwitchTriggered()) {
                 this.setSpeed(0);
-                console.log("upper switch, no step [" + this.relativeSteps + "]");
+                //console.log("upper switch, no step [" + this.relativeSteps + "]");
                 return;
             }
             else if(this.isBackwardsSwitchTriggered())
             {
                 this.setSpeed(0);
-                console.log("lower switch, no step [" + this.relativeSteps + "]");
+                //console.log("lower switch, no step [" + this.relativeSteps + "]");
                 return;
             }
         }

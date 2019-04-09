@@ -135,7 +135,7 @@ class DriveManager {
             var nDirectionX = this.linearSpeed > 0 ? c.BACKWARDS : c.FORWARD;
             var directionY = this.angularSpeed > 0 ? c.RIGHT : c.LEFT;
             var speedDifference = speed * Math.abs(this.angularSpeed) / c.HIGH * this.turnStrength;
-            let dbg = "motor:speeed:direction ";
+            var dbg = "motor:speeed:direction ";
             for(let motor of Object.values(this.motors)) {
                 let lDirection = motor.position.y == directionY ? directionX:nDirectionX;
                 let lSpeed = motor.position.y == directionY ? (speedDifference) : speed;

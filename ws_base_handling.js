@@ -47,7 +47,7 @@ class Motor {
                 this.gpio.direction_02.pwmWrite(c.HIGH);
             }
             else { //BACKWARDS 
-                this.gpio.direction_01.pwmWrite(c.HIGH;
+                this.gpio.direction_01.pwmWrite(c.HIGH);
                 this.gpio.direction_02.pwmWrite(c.LOW);
             }
         }

@@ -96,7 +96,7 @@ $(document).ready(wsUpdate);
 
 function horizontalMove(speedX, speedY) {
 	updateMap.speedX = speedX;
-	updateMap.speedY = -speedY;
+	updateMap.speedY = speedY;
 }
 
 function moveTurret(speedX, speedY) {

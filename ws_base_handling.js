@@ -122,10 +122,10 @@ class DriveManager {
             for(let motor of Object.values(this.motors)) {
                 motor.setSpeed(speed);
                 if(motor.position.y == c.LEFT) {
-                    motor.setDirection(this.angularSpeed > 0 ? c.FORWARD : c.BACKWARDS);
+                    motor.setDirection(this.angularSpeed > 0 ? c.BACKWARDS : c.FORWARD);
                 }
                 else {  //RIGHT 
-                    motor.setDirection(this.angularSpeed > 0 ? c.BACKWARDS : c.FORWARD);
+                    motor.setDirection(this.angularSpeed > 0 ? c.FORWARD : c.BACKWARDS);
                 }
             }
         }

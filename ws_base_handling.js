@@ -137,7 +137,7 @@ class DriveManager {
             for(let motor of Object.values(this.motors)) {
                 motor.setDirection(directionX);
                 // the vehicle is going to turn in the direction where the motors are slower
-                motor.setSpeed(motor.position.y == directionY ? (speed - speedDifference) : speed);
+                motor.setSpeed(motor.position.y == directionY ? (speed - 2*speedDifference) : speed);
             }
         }
     }

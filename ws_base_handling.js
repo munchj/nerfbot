@@ -191,6 +191,51 @@ wss.on('connection', function connection(ws) {
             driveManager.angularSpeed = messageObject.angularSpeed;
             driveManager.updateMotors();
         }
+
+        if(messageObject.type == c.MSG_TEST_MOTORS) {
+            setTimeout(function() {
+                console.log("FRONT LEFT FORWARD")
+                driveManager.motors[c.MOTOR_FL].setSpeed(200);
+                driveManager.motors[c.MOTOR_FL].setDirection(c.FORWARD);
+                setTimeout(function() {
+                    console.log("FRONT LEFT BACKWARDS")
+                    driveManager.motors[c.MOTOR_FL].setSpeed(200);
+                    driveManager.motors[c.MOTOR_FL].setDirection(c.BACKWARDS);
+                    setTimeout(function() {
+                        console.log("FRONT RIGHT FORWARD")
+                        driveManager.motors[c.MOTOR_FR].setSpeed(200);
+                        driveManager.motors[c.MOTOR_FR].setDirection(c.FORWARD);
+                        setTimeout(function() {
+                            console.log("FRONT RIGHT BACKWARDS")
+                            driveManager.motors[c.MOTOR_FR].setSpeed(200);
+                            driveManager.motors[c.MOTOR_FR].setDirection(c.BACKWARDS);
+                            setTimeout(function() {
+                                console.log("BACK LEFT FORWARD")
+                                driveManager.motors[c.MOTOR_BL].setSpeed(200);
+                                driveManager.motors[c.MOTOR_BL].setDirection(c.FORWARD);
+                                setTimeout(function() {
+                                    console.log("BACK LEFT BACKWARDS")
+                                    driveManager.motors[c.MOTOR_BL].setSpeed(200);
+                                    driveManager.motors[c.MOTOR_BL].setDirection(c.BACKWARDS);
+                                    setTimeout(function() {
+                                        console.log("BACK RIGHT FORWARD")
+                                        driveManager.motors[c.MOTOR_BR].setSpeed(200);
+                                        driveManager.motors[c.MOTOR_BR].setDirection(c.FORWARD);
+                                        setTimeout(function() {
+                                            console.log("BACK RIGHT BACKWARDS")
+                                            driveManager.motors[c.MOTOR_BR].setSpeed(200);
+                                            driveManager.motors[c.MOTOR_BR].setDirection(c.BACKWARDS);
+                                        }, 1000);
+                                    }, 1000);
+                                }, 1000);
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+
+
+        }
         ws.send("ok");
       }
       catch(e) {

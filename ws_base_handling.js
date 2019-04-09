@@ -52,7 +52,10 @@ class Motor {
 
     setSpeed(speed) {
         speed = Math.floor(speed);
-        //console.log("Motor::",this.name, "::setSpeed::", speed);
+        if(speed != 0) {
+            console.log("Motor::",this.name, "::setSpeed::", speed);
+        }
+
         if(pigpioOK) {
             this.gpio.speed.pwmWrite(speed);
         }

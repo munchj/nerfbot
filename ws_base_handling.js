@@ -43,12 +43,12 @@ class Motor {
         //console.log("Motor::",this.name, "::setDirection::", direction);
         if(pigpioOK) {
             if(direction == c.FORWARD) {
-                this.gpio.direction_01.pwmWrite(c.HIGH);
-                this.gpio.direction_02.pwmWrite(c.LOW);
-            }
-            else { //BACKWARDS 
                 this.gpio.direction_01.pwmWrite(c.LOW);
                 this.gpio.direction_02.pwmWrite(c.HIGH);
+            }
+            else { //BACKWARDS 
+                this.gpio.direction_01.pwmWrite(c.HIGH;
+                this.gpio.direction_02.pwmWrite(c.LOW);
             }
         }
     }
@@ -130,10 +130,10 @@ class DriveManager {
             for(let motor of Object.values(this.motors)) {
                 motor.setSpeed(speed);
                 if(motor.position.y == c.LEFT) {
-                    motor.setDirection(this.angularSpeed > 0 ? c.BACKWARDS : c.FORWARD);
+                    motor.setDirection(this.angularSpeed > 0 ? c.FORWARD : c.BACKWARDS);
                 }
                 else {  //RIGHT 
-                    motor.setDirection(this.angularSpeed > 0 ? c.FORWARD : c.BACKWARDS);
+                    motor.setDirection(this.angularSpeed > 0 ? c.BACKWARDS : c.FORWARD);
                 }
             }
         }

@@ -81,7 +81,7 @@ class DriveManager {
         console.log("DriveManager::constructor");
         this.linearSpeed = 0;
         this.angularSpeed = 0;
-        this.turnStrength = 0.33; // [0 - 1]
+        this.turnStrength = 0.8; // [0 - 1]
         this.motors = {};
         this.motors[c.MOTOR_FL] = motorFL;
         this.motors[c.MOTOR_FR] = motorFR;

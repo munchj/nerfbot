@@ -157,8 +157,8 @@ class DriveManager {
 
         if(this.linearSpeed != 0) {
             console.log("-------------");
-            console.log(this.motors[c.MOTOR_FL].currentSpeed + " " + this.motors[c.MOTOR_FL].printDirection() + "    " + + this.motors[c.MOTOR_FR].printDirection() + " " + this.motors[c.MOTOR_FR].currentSpeed);
-            console.log(this.motors[c.MOTOR_BL].currentSpeed + " " + this.motors[c.MOTOR_BL].printDirection() + "    " + + this.motors[c.MOTOR_BR].printDirection() + " " + this.motors[c.MOTOR_BL].currentSpeed);
+            console.log(this.motors[c.MOTOR_FL].currentSpeed + " " + this.motors[c.MOTOR_FL].printDirection() + "    " +  this.motors[c.MOTOR_FR].printDirection() + " " + this.motors[c.MOTOR_FR].currentSpeed);
+            console.log(this.motors[c.MOTOR_BL].currentSpeed + " " + this.motors[c.MOTOR_BL].printDirection() + "    " +  this.motors[c.MOTOR_BR].printDirection() + " " + this.motors[c.MOTOR_BR].currentSpeed);
             console.log("-------------");
         }
 

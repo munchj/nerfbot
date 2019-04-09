@@ -66,7 +66,7 @@ class Motor {
     }
 
     printDirection() {
-        return this.direction==c.FORWARD?"↑":"↓";
+        return this.currentDirection==c.FORWARD?"↑":"↓";
     }
 }
 

@@ -52,9 +52,9 @@ class Motor {
 
     setSpeed(speed) {
         speed = Math.floor(speed);
-        if(speed != 0) {
-            console.log("Motor::",this.name, "::setSpeed::", speed);
-        }
+        //if(speed != 0) {
+        //    console.log("Motor::",this.name, "::setSpeed::", speed);
+        //}
 
         if(pigpioOK) {
             this.gpio.speed.pwmWrite(speed);
@@ -135,11 +135,18 @@ class DriveManager {
             var nDirectionX = this.linearSpeed > 0 ? c.BACKWARDS : c.FORWARD;
             var directionY = this.angularSpeed > 0 ? c.RIGHT : c.LEFT;
             var speedDifference = speed * Math.abs(this.angularSpeed) / c.HIGH * this.turnStrength;
+            let dbg = "motor:speeed:direction ";
             for(let motor of Object.values(this.motors)) {
-                motor.setDirection(motor.position.y == directionY ? directionX:nDirectionX);
-                // the vehicle is going to turn in the direction where the motors are slower
-                motor.setSpeed(motor.position.y == directionY ? (speedDifference) : speed);
+                let lDirection = motor.position.y == directionY ? directionX:nDirectionX;
+                let lSpeed = motor.position.y == directionY ? (speedDifference) : speed;
+                motor.setDirection(lDirection);
+                motor.setSpeed(lSpeed);
+                dbg = dbg + " " + motor.name + ":" + lSpeed + ":" + lDirection;
             }
+            if(speed > 0) {
+                console.log(dbg);
+            }
+            
         }
     }
 }

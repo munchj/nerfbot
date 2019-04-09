@@ -37,7 +37,7 @@ var settings = require('./settings');
 var updateRate = 10; //number of updates by second
 
 var baseMinSpeed = 80;
-var maxSpeed = c.HIGH;
+var maxSpeed = 150;
 var keyMapMovement = {
   'w': false,
   'a': false,

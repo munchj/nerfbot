@@ -11,8 +11,8 @@ var maxSpeed = 150;
 var keyMapMovement = {'w':false, 'a':false, 's':false, 'd':false};
 var keyMapTurret = {'i':false, 'k':false, 'j':false, 'l':false};
 var keyMapShooting = {'u':false, 'o':false};
-var updateMap = {'speedX':0, 'speedY': 0};
-
+var baseUpdateMap = {'speedX':0, 'speedY': 0};
+var turretUpdateMap = {'speedX':0, 'speedY': 0};
 
 ///////////////////////////////////////////////
 ////////////// websocket client  //////////////
@@ -26,7 +26,7 @@ window.nerfbotTurretServer = nerfbotTurretServer;
 nerfbotBaseServer.onopen = function() {
 	console.log("[WebSocket] connected");
 	$("#nerfbot_base_ws_status").text("base connected to " + settings.ws_base_handling);
-}
+}	
 nerfbotBaseServer.onerror = function(evt) {
 	console.log("[WebSocket] error");
 	$("#nerfbot_base_ws_status").text("base communication error " + evt);
@@ -85,33 +85,35 @@ nerfbotTurretServer.onmessage = function(event) {
 
 
 function wsUpdate() {
-		var obj = {
+		var baseObj = {
 			type: c.MSG_MOVE,
-			linearSpeed: updateMap.speedX,
-			angularSpeed: updateMap.speedY
+			linearSpeed: baseUpdateMap.speedX,
+			angularSpeed: baseUpdateMap.speedY
+		}
+		var turretObj = {
+			type: c.MSG_MOVE_TURRET,
+			speedX: turretUpdateMap.speedX,
+			speedY: turretUpdateMap.speedY
 		}
 	
-	$("#nerfbot_horizontal_movement").text("speedX:" + updateMap.speedX + " speedY:" + updateMap.speedY);
-	sendCommandToBase(JSON.stringify(obj));
+	$("#nerfbot_horizontal_movement").text("speedX:" + baseUpdateMap.speedX + " speedY:" + baseUpdateMap.speedY);
+	$("#nerfbot_vertical_movement").text("speedX:" + turretUpdateMap.speedX + " speedY:" + turretUpdateMap.speedY);
+
+	sendCommandToBase(JSON.stringify(baseObj));
+	sendCommandToTurret(JSON.stringify(turretObj));
+
 	setTimeout(wsUpdate, 1000/updateRate);
 }
 $(document).ready(wsUpdate);
 
-function horizontalMove(speedX, speedY) {
-	updateMap.speedX = speedX;
-	updateMap.speedY = speedY;
+function moveBase(speedX, speedY) {
+	baseUpdateMap.speedX = speedX;
+	baseUpdateMap.speedY = speedY;
 }
 
 function moveTurret(speedX, speedY) {
-	var obj = {
-		type: c.MSG_MOVE_TURRET,
-		speedX: speedX,
-		speedY: speedY
-	}
-
-	sendCommandToTurret(JSON.stringify(obj));
-	$("#nerfbot_vertical_movement").text("speedX:" + speedX + " speedY:" + speedY);
-
+	turretUpdateMap.speedX = speedX;
+	turretUpdateMap.speedY = speedY;
 }
 
 function shoot(speed)
@@ -130,18 +132,18 @@ var fcnHandleMapChangeMovement = function() {
 	if(keyMapMovement.w && keyMapMovement.s) {return;}
 	if(keyMapMovement.a && keyMapMovement.s) {return;}
 	
-	if(keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) { horizontalMove(maxSpeed, 0); return;}
-	if(keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) { horizontalMove(maxSpeed, -maxSpeed); return;}
-	if(keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) { horizontalMove(maxSpeed, maxSpeed); return;}
+	if(keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) { moveBase(maxSpeed, 0); return;}
+	if(keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) { moveBase(maxSpeed, -maxSpeed); return;}
+	if(keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) { moveBase(maxSpeed, maxSpeed); return;}
 	
-	if(keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) { horizontalMove(-maxSpeed, 0); return;}
-	if(keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) { horizontalMove(-maxSpeed, -maxSpeed); return;}
-	if(keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) { horizontalMove(-maxSpeed, maxSpeed); return;}
+	if(keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) { moveBase(-maxSpeed, 0); return;}
+	if(keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) { moveBase(-maxSpeed, -maxSpeed); return;}
+	if(keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) { moveBase(-maxSpeed, maxSpeed); return;}
 	
-	if(keyMapMovement.a) { horizontalMove(0, -maxSpeed); return;}
-	if(keyMapMovement.d) { horizontalMove(0, maxSpeed); return;}
+	if(keyMapMovement.a) { moveBase(0, -maxSpeed); return;}
+	if(keyMapMovement.d) { moveBase(0, maxSpeed); return;}
 	
-	if(!keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.s && !keyMapMovement.d) { horizontalMove(0, 0); return;}
+	if(!keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.s && !keyMapMovement.d) { moveBase(0, 0); return;}
 }
 
 var fcnHandleMapChangeTurret = function() {
@@ -265,16 +267,17 @@ var remapBaseSpeed = function(speed) {
 }
 
 $(document).ready(function() {
-    var driveOptions = {
-        zone: document.getElementById('nerfbot_video_bottom_left'),
+    var leftJoystickOptions = {
+        zone: document.getElementById('nerfbot_left_joystick_container'),
 		mode: "static",
-		position: {bottom: 80, left : 80},
-		color: "red",
+		position: {bottom: 150, left : 150},
+		color: "white",
+		size: 200
     };
-    var driveManager = nipplejs.create(driveOptions);
+    var leftJoystick = nipplejs.create(leftJoystickOptions);
 
-	driveManager.get(0).on("move", function(evt, data) {
-		var speed = data.distance*2;
+	leftJoystick.get(0).on("move", function(evt, data) {
+		var speed = data.distance;
 		var speedX = speed*Math.sin(data.angle.radian);
 		var speedY = speed*Math.cos(data.angle.radian);
 		
@@ -282,24 +285,25 @@ $(document).ready(function() {
 		speedX = remapBaseSpeed(readjustSpeed(speedX));
 		speedY = remapBaseSpeed(readjustSpeed(speedY));
 		
-		horizontalMove(speedX,speedY);
+		moveBase(speedX,speedY);
 	});
 	
-	driveManager.get(0).on("end", function(evt) {
-		horizontalMove(0,0);
+	leftJoystick.get(0).on("end", function(evt) {
+		moveBase(0,0);
 	});
 	
-	var turretOptions = {
-        zone: document.getElementById('nerfbot_video_bottom_right'),
+	var rightJoystickOptions = {
+        zone: document.getElementById('nerfbot_right_joystick_container'),
 		mode: "static",
-		position: {bottom: 80, right : 80},
-		color: "lightblue",
+		position: {bottom: 150, right : 150},
+		color: "white",
+		size: 200
 		//lockX: true
     };
-    var turretManager = nipplejs.create(turretOptions);
+    var rightJoystick = nipplejs.create(rightJoystickOptions);
 
-	turretManager.get(1).on("move", function(evt, data) {
-		var speed = data.distance*2;
+	rightJoystick.get(1).on("move", function(evt, data) {
+		var speed = data.distance;
 		var speedX = speed*Math.sin(data.angle.radian);
 		var speedY = speed*Math.cos(data.angle.radian);
 		speedX = readjustSpeed(speedX);
@@ -308,7 +312,7 @@ $(document).ready(function() {
 		moveTurret(speedX, speedY);
 	});
 	
-	turretManager.get(1).on("end", function(evt) {
+	rightJoystick.get(1).on("end", function(evt) {
 		moveTurret(0, 0);
 	});	
 });

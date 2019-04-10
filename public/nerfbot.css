@@ -29,7 +29,7 @@
 	padding: 20px;
 }
 
-#nerfbot_video_bottom_left
+#nerfbot_left_joystick_container
 {
 	width : 160px;
 	height: 160px;
@@ -38,7 +38,7 @@
 	left: 0px;
 }
 
-#nerfbot_video_bottom_right
+#nerfbot_right_joystick_container
 {
 	width : 160px;
 	height: 160px;

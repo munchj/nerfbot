@@ -58,7 +58,11 @@ var keyMapShooting = {
   'u': false,
   'o': false
 };
-var updateMap = {
+var baseUpdateMap = {
+  'speedX': 0,
+  'speedY': 0
+};
+var turretUpdateMap = {
   'speedX': 0,
   'speedY': 0
 }; ///////////////////////////////////////////////
@@ -126,31 +130,33 @@ nerfbotTurretServer.onmessage = function (event) {} //console.log("[WebSocket] >
 ;
 
 function wsUpdate() {
-  var obj = {
+  var baseObj = {
     type: c.MSG_MOVE,
-    linearSpeed: updateMap.speedX,
-    angularSpeed: updateMap.speedY
+    linearSpeed: baseUpdateMap.speedX,
+    angularSpeed: baseUpdateMap.speedY
   };
-  $("#nerfbot_horizontal_movement").text("speedX:" + updateMap.speedX + " speedY:" + updateMap.speedY);
-  sendCommandToBase(JSON.stringify(obj));
+  var turretObj = {
+    type: c.MSG_MOVE_TURRET,
+    speedX: turretUpdateMap.speedX,
+    speedY: turretUpdateMap.speedY
+  };
+  $("#nerfbot_horizontal_movement").text("speedX:" + baseUpdateMap.speedX + " speedY:" + baseUpdateMap.speedY);
+  $("#nerfbot_vertical_movement").text("speedX:" + turretUpdateMap.speedX + " speedY:" + turretUpdateMap.speedY);
+  sendCommandToBase(JSON.stringify(baseObj));
+  sendCommandToTurret(JSON.stringify(turretObj));
   setTimeout(wsUpdate, 1000 / updateRate);
 }
 
 $(document).ready(wsUpdate);
 
-function horizontalMove(speedX, speedY) {
-  updateMap.speedX = speedX;
-  updateMap.speedY = speedY;
+function moveBase(speedX, speedY) {
+  baseUpdateMap.speedX = speedX;
+  baseUpdateMap.speedY = speedY;
 }
 
 function moveTurret(speedX, speedY) {
-  var obj = {
-    type: c.MSG_MOVE_TURRET,
-    speedX: speedX,
-    speedY: speedY
-  };
-  sendCommandToTurret(JSON.stringify(obj));
-  $("#nerfbot_vertical_movement").text("speedX:" + speedX + " speedY:" + speedY);
+  turretUpdateMap.speedX = speedX;
+  turretUpdateMap.speedY = speedY;
 }
 
 function shoot(speed) {
@@ -173,47 +179,47 @@ var fcnHandleMapChangeMovement = function fcnHandleMapChangeMovement() {
   }
 
   if (keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) {
-    horizontalMove(maxSpeed, 0);
+    moveBase(maxSpeed, 0);
     return;
   }
 
   if (keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) {
-    horizontalMove(maxSpeed, -maxSpeed);
+    moveBase(maxSpeed, -maxSpeed);
     return;
   }
 
   if (keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) {
-    horizontalMove(maxSpeed, maxSpeed);
+    moveBase(maxSpeed, maxSpeed);
     return;
   }
 
   if (keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) {
-    horizontalMove(-maxSpeed, 0);
+    moveBase(-maxSpeed, 0);
     return;
   }
 
   if (keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) {
-    horizontalMove(-maxSpeed, -maxSpeed);
+    moveBase(-maxSpeed, -maxSpeed);
     return;
   }
 
   if (keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) {
-    horizontalMove(-maxSpeed, maxSpeed);
+    moveBase(-maxSpeed, maxSpeed);
     return;
   }
 
   if (keyMapMovement.a) {
-    horizontalMove(0, -maxSpeed);
+    moveBase(0, -maxSpeed);
     return;
   }
 
   if (keyMapMovement.d) {
-    horizontalMove(0, maxSpeed);
+    moveBase(0, maxSpeed);
     return;
   }
 
   if (!keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.s && !keyMapMovement.d) {
-    horizontalMove(0, 0);
+    moveBase(0, 0);
     return;
   }
 };
@@ -425,52 +431,54 @@ var remapBaseSpeed = function remapBaseSpeed(speed) {
 };
 
 $(document).ready(function () {
-  var driveOptions = {
-    zone: document.getElementById('nerfbot_video_bottom_left'),
+  var leftJoystickOptions = {
+    zone: document.getElementById('nerfbot_left_joystick_container'),
     mode: "static",
     position: {
-      bottom: 80,
-      left: 80
+      bottom: 150,
+      left: 150
     },
-    color: "red"
+    color: "white",
+    size: 200
   };
 
-  var driveManager = _nipplejs["default"].create(driveOptions);
+  var leftJoystick = _nipplejs["default"].create(leftJoystickOptions);
 
-  driveManager.get(0).on("move", function (evt, data) {
-    var speed = data.distance * 2;
+  leftJoystick.get(0).on("move", function (evt, data) {
+    var speed = data.distance;
     var speedX = speed * Math.sin(data.angle.radian);
     var speedY = speed * Math.cos(data.angle.radian); //avoid moving immediately
 
     speedX = remapBaseSpeed(readjustSpeed(speedX));
     speedY = remapBaseSpeed(readjustSpeed(speedY));
-    horizontalMove(speedX, speedY);
+    moveBase(speedX, speedY);
   });
-  driveManager.get(0).on("end", function (evt) {
-    horizontalMove(0, 0);
+  leftJoystick.get(0).on("end", function (evt) {
+    moveBase(0, 0);
   });
-  var turretOptions = {
-    zone: document.getElementById('nerfbot_video_bottom_right'),
+  var rightJoystickOptions = {
+    zone: document.getElementById('nerfbot_right_joystick_container'),
     mode: "static",
     position: {
-      bottom: 80,
-      right: 80
+      bottom: 150,
+      right: 150
     },
-    color: "lightblue" //lockX: true
+    color: "white",
+    size: 200 //lockX: true
 
   };
 
-  var turretManager = _nipplejs["default"].create(turretOptions);
+  var rightJoystick = _nipplejs["default"].create(rightJoystickOptions);
 
-  turretManager.get(1).on("move", function (evt, data) {
-    var speed = data.distance * 2;
+  rightJoystick.get(1).on("move", function (evt, data) {
+    var speed = data.distance;
     var speedX = speed * Math.sin(data.angle.radian);
     var speedY = speed * Math.cos(data.angle.radian);
     speedX = readjustSpeed(speedX);
     speedY = readjustSpeed(speedY);
     moveTurret(speedX, speedY);
   });
-  turretManager.get(1).on("end", function (evt) {
+  rightJoystick.get(1).on("end", function (evt) {
     moveTurret(0, 0);
   });
 });

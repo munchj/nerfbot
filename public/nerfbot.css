@@ -80,3 +80,23 @@ body {
 	border-left:1px solid white;
 	border-bottom:1px solid white;
 }
+
+
+#magazine {
+	position: fixed;
+	bottom: 0;
+	right: 34%;
+	width: 66%;
+	height: 160px;
+	background-color: #111111;
+	opacity: 0.5;
+	color: white;
+	font-size: 28px;
+}
+
+.darts-container {
+	position: absolute;
+	right : 10px;
+	width : 360px;
+	margin: auto;
+}

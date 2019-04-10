@@ -29,7 +29,6 @@
     "nipplejs": "^0.8.1",
     "pigpio": "^1.2.2",
     "watchify": "^3.11.1",
-    "webworker-threads": "^0.7.17",
     "ws": "^6.2.1"
   },
   "browserify": {

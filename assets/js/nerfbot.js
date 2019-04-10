@@ -2,7 +2,7 @@ const $ = require("jquery");
 const c = require('./constants');
 const settings = require('./settings');
 import nipplejs from 'nipplejs';
-
+const Magazine = require('./classes/Magazine');
 
 var updateRate = 10; //number of updates by second
 var baseMinSpeed = 80;
@@ -315,5 +315,13 @@ $(document).ready(function() {
 	rightJoystick.get(1).on("end", function(evt) {
 		moveTurret(0, 0);
 	});	
+
+
+	var magazine = new Magazine("#magazine", 12);
+	magazine.refresh();
+	
+
 });
+
+
 

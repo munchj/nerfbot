@@ -8,12 +8,22 @@ module.exports = class Magazine  {
         this.current_darts = number_of_darts;
     }
 
+    dartUsed() {
+        this.current_darts--;
+        this.refresh();
+    }
+
+    reload() {
+        this.current_darts = this.n_darts;
+        this.refresh();
+    }
+
     refresh() {
         console.log("Magazine::refresh()" + this.n_darts);
         
         var html = $("<div class='darts-container'/>");
         html.append($("<div>"+ this.current_darts + "/" +  this.n_darts + "</div>"));
-        for(var i=0;i<this.n_darts;i++) {
+        for(var i=0;i<this.current_darts;i++) {
             html.append($("<img src='images/dart.png'></img>"));
         }
         

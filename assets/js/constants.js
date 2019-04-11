@@ -35,7 +35,9 @@ module.exports = {
     TIMEOUT_MS : 200,
 
     MAX_TILT_RPM : 200,
-    MAX_PAN_RPM: 200
+    MAX_PAN_RPM: 200,
+
+    UPDATE_RATE: 20
 };
 
     

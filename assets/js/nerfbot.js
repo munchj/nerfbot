@@ -4,7 +4,7 @@ const settings = require('./settings');
 import nipplejs from 'nipplejs';
 const Magazine = require('./classes/Magazine');
 
-var updateRate = 10; //number of updates by second
+
 var baseMinSpeed = 80;
 var maxSpeed = 150;
 
@@ -102,7 +102,7 @@ function wsUpdate() {
 	sendCommandToBase(JSON.stringify(baseObj));
 	sendCommandToTurret(JSON.stringify(turretObj));
 
-	setTimeout(wsUpdate, 1000/updateRate);
+	setTimeout(wsUpdate, 1000/c.UPDATE_RATE);
 }
 $(document).ready(wsUpdate);
 
@@ -148,7 +148,7 @@ var fcnHandleMapChangeMovement = function() {
 }
 
 var fcnHandleMapChangeTurret = function() {
-	if(keyMapTurret.i && keyMapTurret.k) {return;}
+	if(keyMapTurret.i && keyMapTurret.k) {return;}	
 	if(keyMapTurret.j && keyMapTurret.k) {return;}
 	
 	if(keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, 0); return;}
@@ -321,6 +321,13 @@ $(document).ready(function() {
 	var magazine = new Magazine("#magazine", 12);
 	magazine.refresh();
 	
+	$('#shoot-btn').on('click', function() {
+		magazine.dartUsed();
+	});
+
+	$('#reload-btn').on('click', function() {
+		magazine.reload();
+	});
 
 });
 

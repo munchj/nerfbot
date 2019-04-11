@@ -23,13 +23,25 @@ function () {
   }
 
   _createClass(Magazine, [{
+    key: "dartUsed",
+    value: function dartUsed() {
+      this.current_darts--;
+      this.refresh();
+    }
+  }, {
+    key: "reload",
+    value: function reload() {
+      this.current_darts = this.n_darts;
+      this.refresh();
+    }
+  }, {
     key: "refresh",
     value: function refresh() {
       console.log("Magazine::refresh()" + this.n_darts);
       var html = $("<div class='darts-container'/>");
       html.append($("<div>" + this.current_darts + "/" + this.n_darts + "</div>"));
 
-      for (var i = 0; i < this.n_darts; i++) {
+      for (var i = 0; i < this.current_darts; i++) {
         html.append($("<img src='images/dart.png'></img>"));
       }
 
@@ -72,7 +84,8 @@ module.exports = {
   LOW: 0,
   TIMEOUT_MS: 200,
   MAX_TILT_RPM: 200,
-  MAX_PAN_RPM: 200
+  MAX_PAN_RPM: 200,
+  UPDATE_RATE: 20
 };
 
 },{}],3:[function(require,module,exports){
@@ -89,8 +102,6 @@ var c = require('./constants');
 var settings = require('./settings');
 
 var Magazine = require('./classes/Magazine');
-
-var updateRate = 10; //number of updates by second
 
 var baseMinSpeed = 80;
 var maxSpeed = 150;
@@ -196,7 +207,7 @@ function wsUpdate() {
   $("#nerfbot_vertical_movement").text("speedX:" + turretUpdateMap.speedX + " speedY:" + turretUpdateMap.speedY);
   sendCommandToBase(JSON.stringify(baseObj));
   sendCommandToTurret(JSON.stringify(turretObj));
-  setTimeout(wsUpdate, 1000 / updateRate);
+  setTimeout(wsUpdate, 1000 / c.UPDATE_RATE);
 }
 
 $(document).ready(wsUpdate);
@@ -536,6 +547,12 @@ $(document).ready(function () {
   });
   var magazine = new Magazine("#magazine", 12);
   magazine.refresh();
+  $('#shoot-btn').on('click', function () {
+    magazine.dartUsed();
+  });
+  $('#reload-btn').on('click', function () {
+    magazine.reload();
+  });
 });
 
 },{"./classes/Magazine":1,"./constants":2,"./settings":4,"jquery":24,"nipplejs":46}],4:[function(require,module,exports){

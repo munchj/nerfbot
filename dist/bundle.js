@@ -44,6 +44,12 @@ function () {
 "use strict";
 
 module.exports = {
+  ARDUINO: {
+    FORWARD: 1,
+    BACKWARDS: 0,
+    MSG_ROTATE: 1,
+    MSG_SHOOT: 2
+  },
   MSG_PING: "ping",
   MSG_MOVE: "move",
   MSG_MOVE_TURRET: "move_turret",
@@ -64,7 +70,9 @@ module.exports = {
   RIGHT: "right",
   HIGH: 255,
   LOW: 0,
-  TIMEOUT_MS: 200
+  TIMEOUT_MS: 200,
+  MAX_TILT_RPM: 200,
+  MAX_PAN_RPM: 200
 };
 
 },{}],3:[function(require,module,exports){
@@ -199,6 +207,7 @@ function moveBase(speedX, speedY) {
 }
 
 function moveTurret(speedX, speedY) {
+  console.log(speedX, speedY);
   turretUpdateMap.speedX = speedX;
   turretUpdateMap.speedY = speedY;
 }
@@ -278,42 +287,42 @@ var fcnHandleMapChangeTurret = function fcnHandleMapChangeTurret() {
   }
 
   if (keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(maxSpeed, 0);
+    moveTurret(c.MAX_PAN_RPM, 0);
     return;
   }
 
   if (keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(maxSpeed, -maxSpeed);
+    moveTurret(c.MAX_PAN_RPM, -c.MAX_TILT_RPM);
     return;
   }
 
   if (keyMapTurret.i && !keyMapTurret.j && keyMapTurret.l) {
-    moveTurret(maxSpeed, maxSpeed);
+    moveTurret(c.MAX_PAN_RPM, c.MAX_TILT_RPM);
     return;
   }
 
   if (keyMapTurret.k && !keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(-maxSpeed, 0);
+    moveTurret(-c.MAX_PAN_RPM, 0);
     return;
   }
 
   if (keyMapTurret.k && keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(-maxSpeed, -maxSpeed);
+    moveTurret(-c.MAX_PAN_RPM, -c.MAX_TILT_RPM);
     return;
   }
 
   if (keyMapTurret.k && !keyMapTurret.j && keyMapTurret.l) {
-    moveTurret(-maxSpeed, maxSpeed);
+    moveTurret(-c.MAX_PAN_RPM, c.MAX_TILT_RPM);
     return;
   }
 
   if (keyMapTurret.j) {
-    moveTurret(0, -maxSpeed);
+    moveTurret(0, -c.MAX_TILT_RPM);
     return;
   }
 
   if (keyMapTurret.l) {
-    moveTurret(0, maxSpeed);
+    moveTurret(0, c.MAX_TILT_RPM);
     return;
   }
 
@@ -515,12 +524,12 @@ $(document).ready(function () {
   var rightJoystick = _nipplejs["default"].create(rightJoystickOptions);
 
   rightJoystick.get(1).on("move", function (evt, data) {
-    var speed = data.distance;
-    var speedX = speed * Math.sin(data.angle.radian);
-    var speedY = speed * Math.cos(data.angle.radian);
-    speedX = readjustSpeed(speedX);
-    speedY = readjustSpeed(speedY);
-    moveTurret(speedX, speedY);
+    var rpm = data.distance;
+    var rpmX = rpm * Math.sin(data.angle.radian);
+    var rpmY = rpm * Math.cos(data.angle.radian);
+    rpmX = Math.round(rpmX / 100 * c.MAX_PAN_RPM);
+    rpmY = Math.round(rpmY / 100 * c.MAX_TILT_RPM);
+    moveTurret(rpmX, rpmY);
   });
   rightJoystick.get(1).on("end", function (evt) {
     moveTurret(0, 0);
@@ -535,8 +544,8 @@ $(document).ready(function () {
 module.exports = {
   ws_base_handling: "ws:\/\/192.168.1.24:1337",
   ws_base_camera: "ws:\/\/192.168.1.24:1338",
-  ws_turret_handling: "ws:\/\/192.168.1.22:1339",
-  //ws_turret_handling : "ws:\/\/localhost:1339",
+  //ws_turret_handling : "ws:\/\/192.168.1.22:1339",
+  ws_turret_handling: "ws:\/\/localhost:1339",
   ws_turret_camera: "ws:\/\/192.168.1.22:1340",
   ws_tilt_stepper_port: 1341,
   ws_pan_stepper_port: 1342

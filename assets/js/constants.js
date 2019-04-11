@@ -1,4 +1,10 @@
 module.exports = {
+    ARDUINO : {
+        FORWARD: 1,
+        BACKWARDS: 0,
+        MSG_ROTATE: 1,
+        MSG_SHOOT : 2,
+    },
     MSG_PING : "ping",
     MSG_MOVE : "move",
     MSG_MOVE_TURRET : "move_turret",
@@ -26,7 +32,10 @@ module.exports = {
     HIGH : 255,
     LOW : 0,
     
-    TIMEOUT_MS : 200
+    TIMEOUT_MS : 200,
+
+    MAX_TILT_RPM : 200,
+    MAX_PAN_RPM: 200
 };
 
     

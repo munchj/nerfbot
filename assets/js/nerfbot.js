@@ -112,6 +112,7 @@ function moveBase(speedX, speedY) {
 }
 
 function moveTurret(speedX, speedY) {
+	console.log(speedX, speedY);
 	turretUpdateMap.speedX = speedX;
 	turretUpdateMap.speedY = speedY;
 }
@@ -150,16 +151,16 @@ var fcnHandleMapChangeTurret = function() {
 	if(keyMapTurret.i && keyMapTurret.k) {return;}
 	if(keyMapTurret.j && keyMapTurret.k) {return;}
 	
-	if(keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(maxSpeed, 0); return;}
-	if(keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) { moveTurret(maxSpeed, -maxSpeed); return;}
-	if(keyMapTurret.i && !keyMapTurret.j && keyMapTurret.l) { moveTurret(maxSpeed, maxSpeed); return;}
+	if(keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, 0); return;}
+	if(keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, -c.MAX_TILT_RPM); return;}
+	if(keyMapTurret.i && !keyMapTurret.j && keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, c.MAX_TILT_RPM); return;}
 	
-	if(keyMapTurret.k && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(-maxSpeed, 0); return;}
-	if(keyMapTurret.k && keyMapTurret.j && !keyMapTurret.l) { moveTurret(-maxSpeed, -maxSpeed); return;}
-	if(keyMapTurret.k && !keyMapTurret.j && keyMapTurret.l) { moveTurret(-maxSpeed, maxSpeed); return;}
+	if(keyMapTurret.k && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(-c.MAX_PAN_RPM, 0); return;}
+	if(keyMapTurret.k && keyMapTurret.j && !keyMapTurret.l) { moveTurret(-c.MAX_PAN_RPM, -c.MAX_TILT_RPM); return;}
+	if(keyMapTurret.k && !keyMapTurret.j && keyMapTurret.l) { moveTurret(-c.MAX_PAN_RPM, c.MAX_TILT_RPM); return;}
 	
-	if(keyMapTurret.j) { moveTurret(0, -maxSpeed); return;}
-	if(keyMapTurret.l) { moveTurret(0, maxSpeed); return;}
+	if(keyMapTurret.j) { moveTurret(0, -c.MAX_TILT_RPM); return;}
+	if(keyMapTurret.l) { moveTurret(0, c.MAX_TILT_RPM); return;}
 	
 	if(!keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.k && !keyMapTurret.l) { moveTurret(0, 0); return;}
 }
@@ -255,6 +256,7 @@ var readjustSpeed = function(speed) {
 	return Math.round(tmp);
 }
 
+
 var remapBaseSpeed = function(speed) {
 	const delta = maxSpeed - baseMinSpeed;
 	if(speed > 0) {
@@ -303,13 +305,12 @@ $(document).ready(function() {
     var rightJoystick = nipplejs.create(rightJoystickOptions);
 
 	rightJoystick.get(1).on("move", function(evt, data) {
-		var speed = data.distance;
-		var speedX = speed*Math.sin(data.angle.radian);
-		var speedY = speed*Math.cos(data.angle.radian);
-		speedX = readjustSpeed(speedX);
-		speedY = readjustSpeed(speedY);
-
-		moveTurret(speedX, speedY);
+		var rpm = data.distance;
+		var rpmX = rpm*Math.sin(data.angle.radian);
+		var rpmY = rpm*Math.cos(data.angle.radian);
+		rpmX = Math.round(rpmX/100*c.MAX_PAN_RPM);
+		rpmY = Math.round(rpmY/100*c.MAX_TILT_RPM);
+		moveTurret(rpmX, rpmY);
 	});
 	
 	rightJoystick.get(1).on("end", function(evt) {

@@ -121,6 +121,6 @@ module.exports = class StepperMotor {
             }
             return stepper.currentSpeed > 0;
         }
-        this.multiStep(38, 10, rpt);
+        this.multiStep(20, 1, rpt);
     }
 }

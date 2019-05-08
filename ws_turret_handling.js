@@ -4,7 +4,7 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 1339 });
 const ArduinoWrapper = require('./assets/js/classes/ArduinoWrapper');
 
-var arduinoWrapper = new ArduinoWrapper('COM6');
+var arduinoWrapper = new ArduinoWrapper('/dev/ttyUSB0');
 
 
 

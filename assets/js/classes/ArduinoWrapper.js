@@ -63,11 +63,19 @@ module.exports = class ArduinoWrapper {
         this.sendMessage(obj);
     }
 
-    calibrate() {
+    calibrateStart() {
         let obj = {
-            type: c.ARDUINO.MSG_CALIBRATE
+            type: c.ARDUINO.MSG_CALIBRATE_START
         };
         console.log(obj)
         this.sendMessage(obj);
     }
+
+    calibrateFinish() {
+        let obj = {
+            type: c.ARDUINO.MSG_CALIBRATE_FINISH
+        };
+        console.log(obj)
+        this.sendMessage(obj);
+    }    
 }

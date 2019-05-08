@@ -160,8 +160,13 @@ body {
 	bottom: 300px;
 }
 
-#calibrate-btn {
+#calibrate-btn-start {
 	left: 40px;
+	top: 40px;
+}
+
+#calibrate-btn-finish {
+	left: 130px;
 	top: 40px;
 }
 

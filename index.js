@@ -10,8 +10,8 @@ window.initCameraStreams = () =>  {
     stream_01.connect(settings.ws_base_camera);
     stream_01.initCanvas(640, 480);
     stream_01.ws.onerror = (ev) => {
-        //console.log(ev);
-
+        console.log(ev);
+        
         
     };
     stream_01.ws.onopen = (ev) => {

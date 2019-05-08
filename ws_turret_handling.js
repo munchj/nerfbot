@@ -26,9 +26,12 @@ wss.on('connection', function connection(ws) {
         else if(messageObject.type == c.MSG_SHOOT) {
           arduinoWrapper.shoot();
         }
-        else if(messageObject.type == c.MSG_CALIBRATE) {
-          arduinoWrapper.calibrate();
-        }        
+        else if(messageObject.type == c.MSG_CALIBRATE_START) {
+          arduinoWrapper.calibrateStart();
+        }
+        else if(messageObject.type == c.MSG_CALIBRATE_FINISH) {
+          arduinoWrapper.calibrateFinish();
+        }                    
         ws.send("ok");
       }
       catch(e) {

@@ -4,13 +4,15 @@ module.exports = {
         BACKWARDS: 0,
         MSG_ROTATE: 1,
         MSG_SHOOT : 2,
-        MSG_CALIBRATE: 3,
+        MSG_CALIBRATE_START: 3,
+        MSG_CALIBRATE_FINISH: 4,
     },
     MSG_PING : "ping",
     MSG_MOVE : "move",
     MSG_MOVE_TURRET : "move_turret",
     MSG_SHOOT : "shoot",
-    MSG_CALIBRATE: "calibrate",
+    MSG_CALIBRATE_START: "calibrate_start",
+    MSG_CALIBRATE_FINISH: "calibrate_finish",
     MSG_TEST_MOTORS : "test_motors",
 
 
@@ -39,7 +41,7 @@ module.exports = {
     MAX_TILT_RPM : 45,
     MAX_PAN_RPM: 90,
 
-    FLYWHEEL_SPEED: 50,
+    FLYWHEEL_SPEED: 18,
 
     UPDATE_RATE: 20
 };

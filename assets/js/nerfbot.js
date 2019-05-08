@@ -126,11 +126,22 @@ function shoot(speed)
 	sendCommandToTurret(JSON.stringify(obj));
 }
 
-function calibrate()
+function calibrateStart()
 {
-	console.log("calibrate")
+	console.log("calibrate start")
 	var obj = {
-		type: c.MSG_CALIBRATE
+		type: c.MSG_CALIBRATE_START
+	}
+	
+	sendCommandToTurret(JSON.stringify(obj));
+}
+
+
+function calibrateFinish()
+{
+	console.log("calibrate finish")
+	var obj = {
+		type: c.MSG_CALIBRATE_FINISH
 	}
 	
 	sendCommandToTurret(JSON.stringify(obj));
@@ -341,9 +352,13 @@ $(document).ready(function() {
 		magazine.reload();
 	});
 
-	$('#calibrate-btn').on('click', function() {
-		calibrate();
+	$('#calibrate-btn-start').on('click', function() {
+		calibrateStart();
 	});
+
+	$('#calibrate-btn-finish').on('click', function() {
+		calibrateFinish();
+	});	
 
 });
 

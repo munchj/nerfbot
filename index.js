@@ -11,6 +11,7 @@ window.initCameraStreams = () =>  {
     stream_01.initCanvas(640, 480);
     stream_01.ws.onerror = (ev) => {
         //console.log(ev);
+
         
     };
     stream_01.ws.onopen = (ev) => {
@@ -23,10 +24,16 @@ window.initCameraStreams = () =>  {
     stream_02.initCanvas(640, 480);
     stream_02.ws.onerror = (ev) => {
         //console.log(ev);
+        console.log('resize');
+        $('#stream_02_overlay').width($('#stream_02').width()) ;
+        $('#stream_02_overlay').height($('#stream_02').height());
         
     };
     stream_02.ws.onopen = (ev) => {
         stream_02.playStream();
+        console.log('resize');
+        $('#stream_02_overlay').width($('#stream_02').width()) ;
+        $('#stream_02_overlay').height($('#stream_02').height());
     }
 }
 

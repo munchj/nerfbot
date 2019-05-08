@@ -60,12 +60,14 @@ module.exports = {
     FORWARD: 1,
     BACKWARDS: 0,
     MSG_ROTATE: 1,
-    MSG_SHOOT: 2
+    MSG_SHOOT: 2,
+    MSG_CALIBRATE: 3
   },
   MSG_PING: "ping",
   MSG_MOVE: "move",
   MSG_MOVE_TURRET: "move_turret",
   MSG_SHOOT: "shoot",
+  MSG_CALIBRATE: "calibrate",
   MSG_TEST_MOTORS: "test_motors",
   MSG_ROTATE: "rotate",
   MSG_SET_SPEED: "set_speed",
@@ -83,8 +85,9 @@ module.exports = {
   HIGH: 255,
   LOW: 0,
   TIMEOUT_MS: 200,
-  MAX_TILT_RPM: 200,
-  MAX_PAN_RPM: 200,
+  MAX_TILT_RPM: 45,
+  MAX_PAN_RPM: 90,
+  FLYWHEEL_SPEED: 50,
   UPDATE_RATE: 20
 };
 
@@ -104,7 +107,7 @@ var settings = require('./settings');
 var Magazine = require('./classes/Magazine');
 
 var baseMinSpeed = 80;
-var maxSpeed = 150;
+var maxSpeed = c.HIGH;
 var keyMapMovement = {
   'w': false,
   'a': false,
@@ -218,14 +221,22 @@ function moveBase(speedX, speedY) {
 }
 
 function moveTurret(speedX, speedY) {
-  console.log(speedX, speedY);
   turretUpdateMap.speedX = speedX;
   turretUpdateMap.speedY = speedY;
 }
 
 function shoot(speed) {
+  console.log("shoot");
   var obj = {
     type: c.MSG_SHOOT
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+}
+
+function calibrate() {
+  console.log("calibrate");
+  var obj = {
+    type: c.MSG_CALIBRATE
   };
   sendCommandToTurret(JSON.stringify(obj));
 } //////////////////////////////////////////////////
@@ -238,7 +249,7 @@ var fcnHandleMapChangeMovement = function fcnHandleMapChangeMovement() {
     return;
   }
 
-  if (keyMapMovement.a && keyMapMovement.s) {
+  if (keyMapMovement.a && keyMapMovement.d) {
     return;
   }
 
@@ -289,11 +300,13 @@ var fcnHandleMapChangeMovement = function fcnHandleMapChangeMovement() {
 };
 
 var fcnHandleMapChangeTurret = function fcnHandleMapChangeTurret() {
+  console.log(keyMapTurret);
+
   if (keyMapTurret.i && keyMapTurret.k) {
     return;
   }
 
-  if (keyMapTurret.j && keyMapTurret.k) {
+  if (keyMapTurret.j && keyMapTurret.l) {
     return;
   }
 
@@ -548,10 +561,14 @@ $(document).ready(function () {
   var magazine = new Magazine("#magazine", 12);
   magazine.refresh();
   $('#shoot-btn').on('click', function () {
+    shoot(1);
     magazine.dartUsed();
   });
   $('#reload-btn').on('click', function () {
     magazine.reload();
+  });
+  $('#calibrate-btn').on('click', function () {
+    calibrate();
   });
 });
 
@@ -562,7 +579,7 @@ module.exports = {
   ws_base_handling: "ws:\/\/192.168.1.24:1337",
   ws_base_camera: "ws:\/\/192.168.1.24:1338",
   //ws_turret_handling : "ws:\/\/192.168.1.22:1339",
-  ws_turret_handling: "ws:\/\/localhost:1339",
+  ws_turret_handling: "ws:\/\/julien-desktop:1339",
   ws_turret_camera: "ws:\/\/192.168.1.22:1340",
   ws_tilt_stepper_port: 1341,
   ws_pan_stepper_port: 1342
@@ -613,11 +630,18 @@ window.initCameraStreams = function () {
   stream_02.connect(settings.ws_turret_camera);
   stream_02.initCanvas(640, 480);
 
-  stream_02.ws.onerror = function (ev) {//console.log(ev);
+  stream_02.ws.onerror = function (ev) {
+    //console.log(ev);
+    console.log('resize');
+    $('#stream_02_overlay').width($('#stream_02').width());
+    $('#stream_02_overlay').height($('#stream_02').height());
   };
 
   stream_02.ws.onopen = function (ev) {
     stream_02.playStream();
+    console.log('resize');
+    $('#stream_02_overlay').width($('#stream_02').width());
+    $('#stream_02_overlay').height($('#stream_02').height());
   };
 };
 

@@ -6,7 +6,7 @@ const Magazine = require('./classes/Magazine');
 
 
 var baseMinSpeed = 80;
-var maxSpeed = 150;
+var maxSpeed = c.HIGH;
 
 var keyMapMovement = {'w':false, 'a':false, 's':false, 'd':false};
 var keyMapTurret = {'i':false, 'k':false, 'j':false, 'l':false};
@@ -112,15 +112,25 @@ function moveBase(speedX, speedY) {
 }
 
 function moveTurret(speedX, speedY) {
-	console.log(speedX, speedY);
 	turretUpdateMap.speedX = speedX;
 	turretUpdateMap.speedY = speedY;
 }
 
 function shoot(speed)
 {
+	console.log("shoot")
 	var obj = {
 		type: c.MSG_SHOOT
+	}
+	
+	sendCommandToTurret(JSON.stringify(obj));
+}
+
+function calibrate()
+{
+	console.log("calibrate")
+	var obj = {
+		type: c.MSG_CALIBRATE
 	}
 	
 	sendCommandToTurret(JSON.stringify(obj));
@@ -131,7 +141,7 @@ function shoot(speed)
 //////////////////////////////////////////////////
 var fcnHandleMapChangeMovement = function() {
 	if(keyMapMovement.w && keyMapMovement.s) {return;}
-	if(keyMapMovement.a && keyMapMovement.s) {return;}
+	if(keyMapMovement.a && keyMapMovement.d) {return;}
 	
 	if(keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) { moveBase(maxSpeed, 0); return;}
 	if(keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) { moveBase(maxSpeed, -maxSpeed); return;}
@@ -148,8 +158,9 @@ var fcnHandleMapChangeMovement = function() {
 }
 
 var fcnHandleMapChangeTurret = function() {
+	console.log(keyMapTurret);
 	if(keyMapTurret.i && keyMapTurret.k) {return;}	
-	if(keyMapTurret.j && keyMapTurret.k) {return;}
+	if(keyMapTurret.j && keyMapTurret.l) {return;}
 	
 	if(keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, 0); return;}
 	if(keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, -c.MAX_TILT_RPM); return;}
@@ -322,11 +333,16 @@ $(document).ready(function() {
 	magazine.refresh();
 	
 	$('#shoot-btn').on('click', function() {
+		shoot(1);
 		magazine.dartUsed();
 	});
 
 	$('#reload-btn').on('click', function() {
 		magazine.reload();
+	});
+
+	$('#calibrate-btn').on('click', function() {
+		calibrate();
 	});
 
 });

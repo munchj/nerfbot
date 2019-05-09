@@ -330,8 +330,10 @@ $(document).ready(function() {
 		var rpm = data.distance;
 		var rpmX = rpm*Math.sin(data.angle.radian);
 		var rpmY = rpm*Math.cos(data.angle.radian);
-		rpmX = Math.round(rpmX/100*c.MAX_PAN_RPM);
-		rpmY = Math.round(rpmY/100*c.MAX_TILT_RPM);
+		console.log(rpmX, rpmY);
+		rpmX = Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
+		rpmY = Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));
+		
 		moveTurret(rpmX, rpmY);
 	});
 	
@@ -359,6 +361,14 @@ $(document).ready(function() {
 	$('#calibrate-btn-finish').on('click', function() {
 		calibrateFinish();
 	});	
+
+	$('#close-settings').on('click', function() {
+		$('#settings').hide();
+	});	
+	
+	$('#show-settings').on('click', function() {
+		$('#settings').show();
+	});		
 
 });
 

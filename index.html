@@ -8,27 +8,31 @@
 
 <body>
     <div id="nerfbot_video" class="zone nerfbot_video">
+        <button id="show-settings" class="action-btn-icon"><img class="btn-icon" src="/images/settings.png" /></button>
         <canvas id="stream_01" class="stream"></canvas>
         <div id="stream_02_overlay">
-                <img id="turret_crosshair" src="/images/crosshair_light.png"/>
+            <img id="turret_crosshair" src="/images/crosshair_light.png" />
         </div>
         <canvas id="stream_02" class="stream"></canvas>
         <div id="nerfbot_left_joystick_container"></div>
         <div id="nerfbot_right_joystick_container"></div>
         <div id="magazine"></div>
-        <div id="shoot-btn" class="action-btn-icon"><img class="btn-icon" src="/images/crosshair.png"/></div>
-        <div id="reload-btn" class="action-btn">R</div>
-        <div id="calibrate-btn-start" class="action-btn">CS</div>
-        <div id="calibrate-btn-finish" class="action-btn">CF</div>
+        <div id="shoot-btn" class="action-btn-icon"><img class="btn-icon" src="/images/crosshair.png" /></div>
+        <button id="reload-btn" class="action-btn-icon"><img class="btn-icon" src="/images/reload.png" /></button>
         <div id="nerfbot_stats">
-            <div >
-            <div id="nerfbot_base_ws_status">connecting base...</div>
-            <div id="nerfbot_horizontal_movement">speedX:0 speedY:0</div>
-            
-            <hr/>
+            <div id="nerfbot_horizontal_movement" class="nerfbot_stat">speedX:0 speedY:0</div>
+            <div id="nerfbot_vertical_movement" class="nerfbot_stat">speedX:0 speedY:0</div>
+        </div>
+    </div>
 
-            <div id="nerfbot_turret_ws_status">connecting turret...</div>
-            <div id="nerfbot_vertical_movement">speedX:0 speedY:0</div>
+    <div id="settings">
+        <button id="close-settings" class="action-btn">X</button>
+        <button id="calibrate-btn-start" class="action-btn">Start calibration</button>
+        <button id="calibrate-btn-finish" class="action-btn">Finish calibration</button>
+        <div id="nerfbot_infos">
+            <div>
+                <div id="nerfbot_base_ws_status">connecting base...</div>
+                <div id="nerfbot_turret_ws_status">connecting turret...</div>
             </div>
         </div>
     </div>

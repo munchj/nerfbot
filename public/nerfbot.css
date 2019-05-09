@@ -14,25 +14,43 @@
   transform: rotate(180deg);
 }
 
-#nerfbot_stats {
-	background-color: #333333;
+#nerfbot_infos {
+	background-color: transparent;
 	color: white;
 	font-size: 28px;
-	width: 34%;
-	height: 48%;
+	width: 100%;
+	height: 50%;
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	left: 0;
 }
 
-#nerfbot_stats > div {
+#nerfbot_infos > div {
 	padding: 20px;
+}
+
+#nerfbot_stats {
+	color: white;
+	width: 100%;
+	height: 30px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background-color: #111111;
+
+	display:flex;
+	justify-content: space-around;
+}
+
+.nerfbot_stat {
+	padding: 5px;
+	font-size: 20px;
 }
 
 #nerfbot_left_joystick_container
 {
-	width : 160px;
-	height: 160px;
+	width : 200px;
+	height: 200px;
 	position:absolute;
 	bottom: 0px;
 	left: 0px;
@@ -40,8 +58,8 @@
 
 #nerfbot_right_joystick_container
 {
-	width : 160px;
-	height: 160px;
+	width : 200px;
+	height: 200px;
 	position:absolute;
 	bottom: 0px;
 	right: 0px;
@@ -64,28 +82,26 @@ body {
 }
 
 #stream_01 {
-	width:66%;
-	bottom:0;
+	width:50%;
+	top:0;
 	left:0;
-	border-top:1px solid white;
-	background-color: #111111;
+	background-color: lightblue;
 	transform: rotate(180deg);
 }
 
 #stream_02 {
-	width:34%;
+	width:50%;
 	top:0;
 	right:0;
-	background-color:black;
+	background-color: lightpink;
 	border-left:1px solid white;
-	border-bottom:1px solid white;
 }
 
 #stream_02_overlay {
 	position: fixed;
 	z-index: 1000;
-	width:34%;
-	height: 50%;
+	width:50%;
+	height: 80%;
 	top:0;
 	right:0;
 	background-color:transparent;
@@ -98,20 +114,21 @@ body {
 	display: block;
 	top: 50%;
 	left: 50%;
-	margin-top: -60px;
+	margin-top: -70px;
 	margin-left: -60px;
 	position: absolute;
+
 }
 
 
 #magazine {
 	position: fixed;
-	bottom: 0;
+	bottom: 25px;
 	right: 34%;
-	width: 66%;
+	width: 40%;
 	height: 160px;
-	background-color: #111111;
-	opacity: 0.5;
+	background-color: transparent;
+	opacity: 0.9;
 	color: white;
 	font-size: 28px;
 }
@@ -123,6 +140,12 @@ body {
 	margin: auto;
 }
 
+.dart {
+	width: 20px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
 .action-btn {
 	text-align: center;
 	z-index: 100;
@@ -130,12 +153,12 @@ body {
 	
 	
 	height: 80px;
-	width: 80px;
-	border-radius: 50%;
+	width: 500px;
+	border-radius: 10px;
 	background-color: #555555;
 	border: 4px solid white;
 	color: #888888;
-	font-size: 72px;
+	font-size: 50px;
 	opacity: 0.8;
 }
 
@@ -146,18 +169,19 @@ body {
 	height: 80px;
 	width: 80px;
 	color: #888888;
-	font-size: 72px;
 	opacity: 0.8;	
+	background-color: transparent;
+	border: 0;
 }
 
 #shoot-btn {
 	right: 300px;
-	bottom: 40px;
+	bottom: 70px;
 }
 
 #reload-btn {
-	right: 40px;
-	bottom: 300px;
+	right: 440px;
+	bottom: 70px;
 }
 
 #calibrate-btn-start {
@@ -166,8 +190,8 @@ body {
 }
 
 #calibrate-btn-finish {
-	left: 130px;
-	top: 40px;
+	left: 40px;
+	top: 130px;
 }
 
 
@@ -178,3 +202,20 @@ body {
 	z-index: 1000;
 }
 
+#settings {
+	z-index: 10000;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background: #222222;
+	color: white;
+	border: 5px white solid;
+	display:none;
+}
+
+#close-settings {
+	right: 40px;
+	top: 40px;
+}

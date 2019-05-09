@@ -24,7 +24,7 @@ module.exports = class Magazine  {
         var html = $("<div class='darts-container'/>");
         html.append($("<div>"+ this.current_darts + "/" +  this.n_darts + "</div>"));
         for(var i=0;i<this.current_darts;i++) {
-            html.append($("<img src='images/dart.png'></img>"));
+            html.append($("<img class='dart' src='images/dart.png'></img>"));
         }
         
         $(this.container).html(html);

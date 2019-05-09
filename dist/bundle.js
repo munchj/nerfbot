@@ -42,7 +42,7 @@ function () {
       html.append($("<div>" + this.current_darts + "/" + this.n_darts + "</div>"));
 
       for (var i = 0; i < this.current_darts; i++) {
-        html.append($("<img src='images/dart.png'></img>"));
+        html.append($("<img class='dart' src='images/dart.png'></img>"));
       }
 
       $(this.container).html(html);
@@ -61,13 +61,15 @@ module.exports = {
     BACKWARDS: 0,
     MSG_ROTATE: 1,
     MSG_SHOOT: 2,
-    MSG_CALIBRATE: 3
+    MSG_CALIBRATE_START: 3,
+    MSG_CALIBRATE_FINISH: 4
   },
   MSG_PING: "ping",
   MSG_MOVE: "move",
   MSG_MOVE_TURRET: "move_turret",
   MSG_SHOOT: "shoot",
-  MSG_CALIBRATE: "calibrate",
+  MSG_CALIBRATE_START: "calibrate_start",
+  MSG_CALIBRATE_FINISH: "calibrate_finish",
   MSG_TEST_MOTORS: "test_motors",
   MSG_ROTATE: "rotate",
   MSG_SET_SPEED: "set_speed",
@@ -85,9 +87,9 @@ module.exports = {
   HIGH: 255,
   LOW: 0,
   TIMEOUT_MS: 200,
-  MAX_TILT_RPM: 45,
-  MAX_PAN_RPM: 90,
-  FLYWHEEL_SPEED: 50,
+  MAX_TILT_RPM: 80,
+  MAX_PAN_RPM: 80,
+  FLYWHEEL_SPEED: 18,
   UPDATE_RATE: 20
 };
 
@@ -233,10 +235,18 @@ function shoot(speed) {
   sendCommandToTurret(JSON.stringify(obj));
 }
 
-function calibrate() {
-  console.log("calibrate");
+function calibrateStart() {
+  console.log("calibrate start");
   var obj = {
-    type: c.MSG_CALIBRATE
+    type: c.MSG_CALIBRATE_START
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+}
+
+function calibrateFinish() {
+  console.log("calibrate finish");
+  var obj = {
+    type: c.MSG_CALIBRATE_FINISH
   };
   sendCommandToTurret(JSON.stringify(obj));
 } //////////////////////////////////////////////////
@@ -551,8 +561,9 @@ $(document).ready(function () {
     var rpm = data.distance;
     var rpmX = rpm * Math.sin(data.angle.radian);
     var rpmY = rpm * Math.cos(data.angle.radian);
-    rpmX = Math.round(rpmX / 100 * c.MAX_PAN_RPM);
-    rpmY = Math.round(rpmY / 100 * c.MAX_TILT_RPM);
+    console.log(rpmX, rpmY);
+    rpmX = Math.round(c.MAX_PAN_RPM / 5.0 * Math.exp(-3 + Math.abs(rpmX / 18.0)));
+    rpmY = Math.round(c.MAX_TILT_RPM / 5.0 * Math.exp(-3 + Math.abs(rpmY / 18.0)));
     moveTurret(rpmX, rpmY);
   });
   rightJoystick.get(1).on("end", function (evt) {
@@ -567,8 +578,17 @@ $(document).ready(function () {
   $('#reload-btn').on('click', function () {
     magazine.reload();
   });
-  $('#calibrate-btn').on('click', function () {
-    calibrate();
+  $('#calibrate-btn-start').on('click', function () {
+    calibrateStart();
+  });
+  $('#calibrate-btn-finish').on('click', function () {
+    calibrateFinish();
+  });
+  $('#close-settings').on('click', function () {
+    $('#settings').hide();
+  });
+  $('#show-settings').on('click', function () {
+    $('#settings').show();
   });
 });
 
@@ -633,17 +653,18 @@ window.initCameraStreams = function () {
 
   stream_02.ws.onerror = function (ev) {
     //console.log(ev);
-    console.log('resize');
     $('#stream_02_overlay').width($('#stream_02').width());
     $('#stream_02_overlay').height($('#stream_02').height());
   };
 
   stream_02.ws.onopen = function (ev) {
     stream_02.playStream();
-    console.log('resize');
     $('#stream_02_overlay').width($('#stream_02').width());
     $('#stream_02_overlay').height($('#stream_02').height());
   };
+
+  $('#stream_02_overlay').width($('#stream_02').width());
+  $('#stream_02_overlay').height($('#stream_02').height());
 };
 
 $(document).ready(function () {

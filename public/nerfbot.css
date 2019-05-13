@@ -192,6 +192,18 @@ body {
 	top: 40px;
 }
 
+#power-slider {
+	left: 40px;
+	top: 140px;
+	width: 420px;
+}
+
+.settings-input {
+	z-index: 100;
+	position: fixed;
+	opacity: 0.8;	
+	background-color: transparent;
+}
 
 .btn-icon {
 	margin: auto;
@@ -209,7 +221,6 @@ body {
 	left: 0px;
 	background: #222222;
 	color: white;
-	border: 5px white solid;
 	display:none;
 }
 

@@ -24,7 +24,7 @@ wss.on('connection', function connection(ws) {
             //arduinoWrapper.rotate();
         }
         else if(messageObject.type == c.MSG_SHOOT) {
-          arduinoWrapper.shoot();
+          arduinoWrapper.shoot(messageObject.speed);
         }
         else if(messageObject.type == c.MSG_CALIBRATE_START) {
           arduinoWrapper.calibrateStart();

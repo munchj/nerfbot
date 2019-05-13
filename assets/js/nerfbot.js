@@ -1,4 +1,5 @@
 const $ = require("jquery");
+global.jQuery = $;
 const c = require('./constants');
 const settings = require('./settings');
 import nipplejs from 'nipplejs';
@@ -13,6 +14,8 @@ var keyMapTurret = {'i':false, 'k':false, 'j':false, 'l':false};
 var keyMapShooting = {'u':false, 'o':false};
 var baseUpdateMap = {'speedX':0, 'speedY': 0};
 var turretUpdateMap = {'speedX':0, 'speedY': 0};
+
+var currentPower = c.FLYWHEEL_MIN_SPEED;
 
 ///////////////////////////////////////////////
 ////////////// websocket client  //////////////
@@ -116,11 +119,64 @@ function moveTurret(speedX, speedY) {
 	turretUpdateMap.speedY = speedY;
 }
 
+function turretGoToPosition(positionX, positionY, speedX, speedY) {
+	console.log("turretGoToPosition", positionX, positionY, speedX, speedY);
+	var obj = {
+		type: c.MSG_TURRET_GOTO_POSITION,
+		positionX: positionX,
+		positionY: positionY,
+		speedX: speedX,
+		speedY: speedY
+	}
+	sendCommandToTurret(JSON.stringify(obj));
+}
+
+function turretGoToAngle(angleX, angleY, speedX, speedY) {
+	console.log("turretGoToAngle", angleX, angleY, speedX, speedY);
+	var obj = {
+		type: c.MSG_TURRET_GOTO_ANGLE,
+		angleX: angleX,
+		angleY: angleY,
+		speedX: speedX,
+		speedY: speedY
+	}
+	sendCommandToTurret(JSON.stringify(obj));
+}
+
+function turretMovePosition(directionX, directionY, positionX, positionY, speedX, speedY) {
+	console.log("turretMovePosition", directionX, directionY, positionX, positionY, speedX, speedY);
+	var obj = {
+		type: c.MSG_TURRET_MOVE_POSITION,
+		directionX: directionX,
+		directionY: directionY,
+		positionX: positionX,
+		positionY: positionY,
+		speedX: speedX,
+		speedY: speedY
+	}
+	sendCommandToTurret(JSON.stringify(obj));
+}
+
+function turretMoveAngle(directionX, directionY, angleX, angleY, speedX, speedY) {
+	console.log("turretMoveAngle", directionX, directionY, angleX, angleY, speedX, speedY);
+	var obj = {
+		type: c.MSG_TURRET_MOVE_ANGLE,
+		directionX: directionX,
+		directionY: directionY,
+		angleX: angleX,
+		angleY: angleY,
+		speedX: speedX,
+		speedY: speedY
+	}
+	sendCommandToTurret(JSON.stringify(obj));
+}
+
 function shoot(speed)
 {
 	console.log("shoot")
 	var obj = {
-		type: c.MSG_SHOOT
+		type: c.MSG_SHOOT,
+		speed: speed
 	}
 	
 	sendCommandToTurret(JSON.stringify(obj));
@@ -348,7 +404,7 @@ $(document).ready(function() {
 	magazine.refresh();
 	
 	$('#shoot-btn').on('click', function() {
-		shoot(1);
+		shoot(currentPower);
 		magazine.dartUsed();
 	});
 
@@ -372,6 +428,14 @@ $(document).ready(function() {
 		$('#settings').show();
 	});		
 
+
+
+	$("#power-slider").attr({"min": c.FLYWHEEL_MIN_SPEED, "max": c.FLYWHEEL_MAX_SPEED});
+	$("#power-slider").val(c.FLYWHEEL_MIN_SPEED);
+	$("#power-slider").on("change", function(val) {
+		currentPower = $("#power-slider").val();
+		console.log(currentPower);
+	});
 });
 
 

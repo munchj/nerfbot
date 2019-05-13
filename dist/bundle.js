@@ -61,7 +61,11 @@ module.exports = {
     MSG_ROTATE: 1,
     MSG_SHOOT: 2,
     MSG_CALIBRATE_START: 3,
-    MSG_CALIBRATE_FINISH: 4
+    MSG_CALIBRATE_FINISH: 4,
+    MSG_GOTO_POSITION: 5,
+    MSG_GOTO_ANGLE: 6,
+    MSG_MOVE_POSITION: 7,
+    MSG_MOVE_ANGLE: 8
   },
   MSG_PING: "ping",
   MSG_MOVE: "move",
@@ -70,6 +74,10 @@ module.exports = {
   MSG_CALIBRATE_START: "calibrate_start",
   MSG_CALIBRATE_FINISH: "calibrate_finish",
   MSG_TEST_MOTORS: "test_motors",
+  MSG_TURRET_GOTO_POSITION: "goto_pos",
+  MSG_TURRET_GOTO_ANGLE: "goto_angle",
+  MSG_TURRET_MOVE_POSITION: "move_pos",
+  MSG_TURRET_MOVE_ANGLE: "move_angle",
   MSG_ROTATE: "rotate",
   MSG_SET_SPEED: "set_speed",
   MSG_SET_DIRECTION: "set_direction",
@@ -94,6 +102,7 @@ module.exports = {
 };
 
 },{}],3:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _nipplejs = _interopRequireDefault(require("nipplejs"));
@@ -101,6 +110,8 @@ var _nipplejs = _interopRequireDefault(require("nipplejs"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var $ = require("jquery");
+
+global.jQuery = $;
 
 var c = require('./constants');
 
@@ -133,7 +144,8 @@ var baseUpdateMap = {
 var turretUpdateMap = {
   'speedX': 0,
   'speedY': 0
-}; ///////////////////////////////////////////////
+};
+var currentPower = c.FLYWHEEL_MIN_SPEED; ///////////////////////////////////////////////
 ////////////// websocket client  //////////////
 ///////////////////////////////////////////////
 
@@ -227,10 +239,63 @@ function moveTurret(speedX, speedY) {
   turretUpdateMap.speedY = speedY;
 }
 
+function turretGoToPosition(positionX, positionY, speedX, speedY) {
+  console.log("turretGoToPosition", positionX, positionY, speedX, speedY);
+  var obj = {
+    type: c.MSG_TURRET_GOTO_POSITION,
+    positionX: positionX,
+    positionY: positionY,
+    speedX: speedX,
+    speedY: speedY
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+}
+
+function turretGoToAngle(angleX, angleY, speedX, speedY) {
+  console.log("turretGoToAngle", angleX, angleY, speedX, speedY);
+  var obj = {
+    type: c.MSG_TURRET_GOTO_ANGLE,
+    angleX: angleX,
+    angleY: angleY,
+    speedX: speedX,
+    speedY: speedY
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+}
+
+function turretMovePosition(directionX, directionY, positionX, positionY, speedX, speedY) {
+  console.log("turretMovePosition", directionX, directionY, positionX, positionY, speedX, speedY);
+  var obj = {
+    type: c.MSG_TURRET_MOVE_POSITION,
+    directionX: directionX,
+    directionY: directionY,
+    positionX: positionX,
+    positionY: positionY,
+    speedX: speedX,
+    speedY: speedY
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+}
+
+function turretMoveAngle(directionX, directionY, angleX, angleY, speedX, speedY) {
+  console.log("turretMoveAngle", directionX, directionY, angleX, angleY, speedX, speedY);
+  var obj = {
+    type: c.MSG_TURRET_MOVE_ANGLE,
+    directionX: directionX,
+    directionY: directionY,
+    angleX: angleX,
+    angleY: angleY,
+    speedX: speedX,
+    speedY: speedY
+  };
+  sendCommandToTurret(JSON.stringify(obj));
+}
+
 function shoot(speed) {
   console.log("shoot");
   var obj = {
-    type: c.MSG_SHOOT
+    type: c.MSG_SHOOT,
+    speed: speed
   };
   sendCommandToTurret(JSON.stringify(obj));
 }
@@ -574,7 +639,7 @@ $(document).ready(function () {
   var magazine = new Magazine("#magazine", 12);
   magazine.refresh();
   $('#shoot-btn').on('click', function () {
-    shoot(1);
+    shoot(currentPower);
     magazine.dartUsed();
   });
   $('#reload-btn').on('click', function () {
@@ -592,8 +657,18 @@ $(document).ready(function () {
   $('#show-settings').on('click', function () {
     $('#settings').show();
   });
+  $("#power-slider").attr({
+    "min": c.FLYWHEEL_MIN_SPEED,
+    "max": c.FLYWHEEL_MAX_SPEED
+  });
+  $("#power-slider").val(c.FLYWHEEL_MIN_SPEED);
+  $("#power-slider").on("change", function (val) {
+    currentPower = $("#power-slider").val();
+    console.log(currentPower);
+  });
 });
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./classes/Magazine":1,"./constants":2,"./settings":4,"jquery":24,"nipplejs":46}],4:[function(require,module,exports){
 "use strict";
 

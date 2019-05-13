@@ -6,6 +6,10 @@ module.exports = {
         MSG_SHOOT : 2,
         MSG_CALIBRATE_START: 3,
         MSG_CALIBRATE_FINISH: 4,
+        MSG_GOTO_POSITION: 5,
+        MSG_GOTO_ANGLE: 6,
+        MSG_MOVE_POSITION: 7,
+        MSG_MOVE_ANGLE: 8        
     },
     MSG_PING : "ping",
     MSG_MOVE : "move",
@@ -14,6 +18,10 @@ module.exports = {
     MSG_CALIBRATE_START: "calibrate_start",
     MSG_CALIBRATE_FINISH: "calibrate_finish",
     MSG_TEST_MOTORS : "test_motors",
+    MSG_TURRET_GOTO_POSITION : "goto_pos",
+    MSG_TURRET_GOTO_ANGLE : "goto_angle",
+    MSG_TURRET_MOVE_POSITION : "move_pos",
+    MSG_TURRET_MOVE_ANGLE : "move_angle",
 
 
     MSG_ROTATE : "rotate",

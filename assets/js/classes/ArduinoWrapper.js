@@ -54,10 +54,74 @@ module.exports = class ArduinoWrapper {
        
     }
 
+    goToPosition(speedX, positionX, speedY, positionY) {
+        let obj = {
+            type : c.ARDUINO.MSG_GOTO_POSITION,
+            speedX : speedX,
+            positionX : positionX,
+            speedY : speedY,
+            positionY : positionY
+        };
+        if(JSON.stringify(this.lastObject) != JSON.stringify(obj)) {
+            console.log(obj);
+            this.sendMessage(obj);
+            this.lastObject = obj;
+        }
+    }
+
+    goToAngle(speedX, angleX, speedY, angleY) {
+        let obj = {
+            type : c.ARDUINO.MSG_GOTO_ANGLE,
+            speedX : speedX,
+            angleX : angleX,
+            speedY : speedY,
+            angleY : angleY
+        };
+        if(JSON.stringify(this.lastObject) != JSON.stringify(obj)) {
+            console.log(obj);
+            this.sendMessage(obj);
+            this.lastObject = obj;
+        }
+    }  
+    
+    movePosition(directionX, speedX, positionX, directionY, speedY, positionY) {
+        let obj = {
+            type : c.ARDUINO.MSG_MOVE_POSITION,
+            directionX: directionX,
+            speedX : speedX,
+            positionX : positionX,
+            directionY : directionY,
+            speedY : speedY,
+            positionY : positionY
+        };
+        if(JSON.stringify(this.lastObject) != JSON.stringify(obj)) {
+            console.log(obj);
+            this.sendMessage(obj);
+            this.lastObject = obj;
+        }
+    }   
+    
+    moveAngle(directionX, speedX, angleX, directionY, speedY, angleY) {
+        let obj = {
+            type : c.ARDUINO.MSG_MOVE_POSITION,
+            directionX: directionX,
+            speedX : speedX,
+            angleX : angleX,
+            directionY : directionY,
+            speedY : speedY,
+            angleY : angleY
+        };
+        if(JSON.stringify(this.lastObject) != JSON.stringify(obj)) {
+            console.log(obj);
+            this.sendMessage(obj);
+            this.lastObject = obj;
+        }
+    }       
+
     shoot(speed) {
         let obj = {
             type: c.ARDUINO.MSG_SHOOT,
-            speedX: c.FLYWHEEL_SPEED
+            speedX: speed
         };
         console.log(obj)
         this.sendMessage(obj);

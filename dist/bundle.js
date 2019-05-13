@@ -31,6 +31,7 @@ function () {
   }, {
     key: "reload",
     value: function reload() {
+      console.log("reload");
       this.current_darts = this.n_darts;
       this.refresh();
     }
@@ -39,11 +40,9 @@ function () {
     value: function refresh() {
       console.log("Magazine::refresh()" + this.n_darts);
       var html = $("<div class='darts-container'/>");
-      html.append($("<div>" + this.current_darts + "/" + this.n_darts + "</div>"));
-
-      for (var i = 0; i < this.current_darts; i++) {
-        html.append($("<img class='dart' src='images/dart.png'></img>"));
-      }
+      html.append($("<div>" + this.current_darts + "/" + this.n_darts + "</div>")); //for(var i=0;i<this.current_darts;i++) {
+      //    html.append($("<img class='dart' src='images/dart.png'></img>"));
+      //}
 
       $(this.container).html(html);
     }
@@ -89,7 +88,8 @@ module.exports = {
   TIMEOUT_MS: 200,
   MAX_TILT_RPM: 80,
   MAX_PAN_RPM: 80,
-  FLYWHEEL_SPEED: 18,
+  FLYWHEEL_MIN_SPEED: 18,
+  FLYWHEEL_MAX_SPEED: 50,
   UPDATE_RATE: 20
 };
 
@@ -561,9 +561,11 @@ $(document).ready(function () {
     var rpm = data.distance;
     var rpmX = rpm * Math.sin(data.angle.radian);
     var rpmY = rpm * Math.cos(data.angle.radian);
-    console.log(rpmX, rpmY);
-    rpmX = (rpmX > 0 ? 1 : -1) * Math.round(c.MAX_PAN_RPM / 5.0 * Math.exp(-3 + Math.abs(rpmX / 18.0)));
-    rpmY = (rpmY > 0 ? 1 : -1) * Math.round(c.MAX_TILT_RPM / 5.0 * Math.exp(-3 + Math.abs(rpmY / 18.0)));
+    console.log(rpmX, rpmY); //rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
+    //rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));
+
+    rpmX = (rpmX > 0 ? 1 : -1) * Math.round(c.MAX_PAN_RPM * Math.pow(Math.abs(rpmX / 100), 2));
+    rpmY = (rpmY > 0 ? 1 : -1) * Math.round(c.MAX_TILT_RPM * Math.pow(Math.abs(rpmY / 100), 2));
     moveTurret(rpmX, rpmY);
   });
   rightJoystick.get(1).on("end", function (evt) {

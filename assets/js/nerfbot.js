@@ -323,7 +323,7 @@ $(document).ready(function() {
 		color: "white",
 		size: 200
 		//lockX: true
-    };
+    };	
     var rightJoystick = nipplejs.create(rightJoystickOptions);
 
 	rightJoystick.get(1).on("move", function(evt, data) {
@@ -331,8 +331,10 @@ $(document).ready(function() {
 		var rpmX = rpm*Math.sin(data.angle.radian);
 		var rpmY = rpm*Math.cos(data.angle.radian);
 		console.log(rpmX, rpmY);
-		rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
-		rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));
+		//rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
+		//rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));
+		rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM*Math.pow(Math.abs(rpmX/100), 2));
+		rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM*Math.pow(Math.abs(rpmY/100), 2));
 		
 		moveTurret(rpmX, rpmY);
 	});

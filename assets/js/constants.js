@@ -41,7 +41,8 @@ module.exports = {
     MAX_TILT_RPM : 80,
     MAX_PAN_RPM: 80,
 
-    FLYWHEEL_SPEED: 18,
+    FLYWHEEL_MIN_SPEED: 18,
+    FLYWHEEL_MAX_SPEED: 50,
 
     UPDATE_RATE: 20
 };

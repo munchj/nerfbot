@@ -65,7 +65,8 @@ module.exports = {
     MSG_GOTO_POSITION: 5,
     MSG_GOTO_ANGLE: 6,
     MSG_MOVE_POSITION: 7,
-    MSG_MOVE_ANGLE: 8
+    MSG_MOVE_ANGLE: 8,
+    MSG_HOME: 9
   },
   MSG_PING: "ping",
   MSG_MOVE: "move",
@@ -91,6 +92,8 @@ module.exports = {
   BACK: "back",
   LEFT: "left",
   RIGHT: "right",
+  UP: "up",
+  DOWN: "down",
   HIGH: 255,
   LOW: 0,
   TIMEOUT_MS: 200,
@@ -222,8 +225,8 @@ function wsUpdate() {
   };
   $("#nerfbot_horizontal_movement").text("speedX:" + baseUpdateMap.speedX + " speedY:" + baseUpdateMap.speedY);
   $("#nerfbot_vertical_movement").text("speedX:" + turretUpdateMap.speedX + " speedY:" + turretUpdateMap.speedY);
-  sendCommandToBase(JSON.stringify(baseObj));
-  sendCommandToTurret(JSON.stringify(turretObj));
+  sendCommandToBase(JSON.stringify(baseObj)); //sendCommandToTurret(JSON.stringify(turretObj));
+
   setTimeout(wsUpdate, 1000 / c.UPDATE_RATE);
 }
 
@@ -666,6 +669,17 @@ $(document).ready(function () {
     currentPower = $("#power-slider").val();
     console.log(currentPower);
   });
+  $("#stream_02_overlay").on("click", function (e) {
+    var offset = this.getClientRects()[0];
+    var positionX = e.clientX - offset.left - this.clientWidth / 2;
+    var positionY = e.clientY - offset.top - this.clientHeight / 2;
+    var fovX = 50;
+    var fovY = 35;
+    var angleX = fovX / this.clientWidth * positionX;
+    var angleY = -fovY / this.clientHeight * positionY;
+    turretMoveAngle(angleY < 0 ? c.RIGHT : c.LEFT, angleX < 0 ? c.DOWN : c.UP, Math.abs(angleY), Math.abs(angleX), 10, 20);
+    console.log(angleX, angleY);
+  });
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -675,11 +689,13 @@ $(document).ready(function () {
 module.exports = {
   ws_base_handling: "ws:\/\/192.168.1.24:1337",
   ws_base_camera: "ws:\/\/192.168.1.24:1338",
-  ws_turret_handling: "ws:\/\/192.168.1.22:1339",
-  //ws_turret_handling : "ws:\/\/julien-desktop:1339",
+  //ws_turret_handling : "ws:\/\/192.168.1.22:1339",
+  ws_turret_handling: "ws:\/\/julien-desktop:1339",
   ws_turret_camera: "ws:\/\/192.168.1.22:1340",
   ws_tilt_stepper_port: 1341,
-  ws_pan_stepper_port: 1342
+  ws_pan_stepper_port: 1342,
+  //ttyPort: '/dev/ttyUSB0',
+  ttyPort: 'COM6'
 };
 
 },{}],5:[function(require,module,exports){

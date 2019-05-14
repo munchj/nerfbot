@@ -9,7 +9,8 @@ module.exports = {
         MSG_GOTO_POSITION: 5,
         MSG_GOTO_ANGLE: 6,
         MSG_MOVE_POSITION: 7,
-        MSG_MOVE_ANGLE: 8        
+        MSG_MOVE_ANGLE: 8,
+        MSG_HOME: 9,        
     },
     MSG_PING : "ping",
     MSG_MOVE : "move",
@@ -40,6 +41,8 @@ module.exports = {
     BACK : "back",
     LEFT : "left",
     RIGHT : "right",
+    UP: "up",
+    DOWN: "down",
     
     HIGH : 255,
     LOW : 0,

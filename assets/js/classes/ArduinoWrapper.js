@@ -103,13 +103,13 @@ module.exports = class ArduinoWrapper {
     
     moveAngle(directionX, speedX, angleX, directionY, speedY, angleY) {
         let obj = {
-            type : c.ARDUINO.MSG_MOVE_POSITION,
-            directionX: directionX,
-            speedX : speedX,
-            angleX : angleX,
-            directionY : directionY,
-            speedY : speedY,
-            angleY : angleY
+            type : c.ARDUINO.MSG_MOVE_ANGLE,
+            directionX: "" + directionX,
+            speedX : "" + speedX,
+            angleX : "" + angleX,
+            directionY : "" + directionY,
+            speedY : "" + speedY,
+            angleY : "" + angleY
         };
         if(JSON.stringify(this.lastObject) != JSON.stringify(obj)) {
             console.log(obj);

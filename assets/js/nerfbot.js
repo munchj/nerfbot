@@ -103,7 +103,7 @@ function wsUpdate() {
 	$("#nerfbot_vertical_movement").text("speedX:" + turretUpdateMap.speedX + " speedY:" + turretUpdateMap.speedY);
 
 	sendCommandToBase(JSON.stringify(baseObj));
-	sendCommandToTurret(JSON.stringify(turretObj));
+	//sendCommandToTurret(JSON.stringify(turretObj));
 
 	setTimeout(wsUpdate, 1000/c.UPDATE_RATE);
 }
@@ -436,6 +436,22 @@ $(document).ready(function() {
 		currentPower = $("#power-slider").val();
 		console.log(currentPower);
 	});
+
+
+	$("#stream_02_overlay").on("click", function(e) {
+		var offset = this.getClientRects()[0];
+		var positionX = e.clientX - offset.left - this.clientWidth/2;
+		var positionY = e.clientY - offset.top - this.clientHeight/2;
+		
+		var fovX = 50;
+		var fovY = 35;
+
+		var angleX = fovX / this.clientWidth * positionX;
+		var angleY = -fovY / this.clientHeight * positionY;
+
+		turretMoveAngle(angleY<0?c.RIGHT:c.LEFT, angleX<0?c.DOWN:c.UP, Math.abs(angleY), Math.abs(angleX), 10, 20);
+		console.log(angleX, angleY);
+	});		
 });
 
 

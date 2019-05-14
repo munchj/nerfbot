@@ -4,7 +4,7 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 1339 });
 const ArduinoWrapper = require('./assets/js/classes/ArduinoWrapper');
 
-var arduinoWrapper = new ArduinoWrapper('/dev/ttyUSB0');
+var arduinoWrapper = new ArduinoWrapper(settings.ttyPort);
 
 
 
@@ -31,7 +31,10 @@ wss.on('connection', function connection(ws) {
         }
         else if(messageObject.type == c.MSG_CALIBRATE_FINISH) {
           arduinoWrapper.calibrateFinish();
-        }                    
+        }     
+        else if(messageObject.type == c.MSG_TURRET_MOVE_ANGLE) {
+          arduinoWrapper.moveAngle(messageObject.directionX==c.LEFT?c.ARDUINO.BACKWARDS:c.ARDUINO.FORWARD, messageObject.speedX, messageObject.angleX, messageObject.directionY==c.UP?c.ARDUINO.BACKWARDS:c.ARDUINO.FORWARD, messageObject.speedY, messageObject.angleY);
+        }                               
         ws.send("ok");
       }
       catch(e) {

@@ -116,14 +116,14 @@ body {
 }
 
 #turret_crosshair {
-	width:8px;
-	height: 8px;
+	width:16px;
+	height: 16px;
 	z-index: 1000;	
 	display: block;
 	top: 50%;
 	left: 50%;
-	margin-top: -4px;
-	margin-left: -4px;
+	margin-top: -8px;
+	margin-left: -8px;
 	position: absolute;
 
 }
@@ -162,10 +162,10 @@ body {
 
 .action-btn-icon {
 	text-align: center;
-	z-index: 100;
+	z-index: 1000;
 	position: fixed;
-	height: 80px;
-	width: 80px;
+	height: 200px;
+	width: 200px;
 	color: #888888;
 	opacity: 0.8;	
 	background-color: transparent;
@@ -174,12 +174,12 @@ body {
 
 #shoot-btn {
 	right: 300px;
-	bottom: 70px;
+	bottom: 50px;
 }
 
 #reload-btn {
-	right: 400px;
-	bottom: 70px;
+	left: 40px;
+	top: 180px;
 }
 
 #calibrate-btn-start {
@@ -188,13 +188,13 @@ body {
 }
 
 #calibrate-btn-finish {
-	left: 260px;
+	left: 300px;
 	top: 40px;
 }
 
 #power-slider {
 	left: 40px;
-	top: 140px;
+	top: 340px;
 	width: 420px;
 }
 
@@ -207,8 +207,8 @@ body {
 
 .btn-icon {
 	margin: auto;
-	width:80px;
-	height: 80px;
+	width:200px;
+	height: 200px;
 	z-index: 1000;
 }
 

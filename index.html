@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.3, user-scalable=no" />
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" type="text/css" href="nerfbot.css">
     <script type="text/javascript" src="dist/bundle.js"></script>
@@ -19,7 +20,7 @@
         <div id="nerfbot_right_joystick_container"></div>
         
         <div id="shoot-btn" class="action-btn-icon"><img class="btn-icon" src="/images/crosshair.png" /></div>
-        <button id="reload-btn" class="action-btn-icon"><img class="btn-icon" src="/images/reload.png" /></button>
+        
         <div id="nerfbot_stats">
             <div id="nerfbot_horizontal_movement" class="nerfbot_stat">speedX:0 speedY:0</div>
             <div id="nerfbot_vertical_movement" class="nerfbot_stat">speedX:0 speedY:0</div>
@@ -30,7 +31,9 @@
         <button id="close-settings" class="action-btn">X</button>
         <button id="calibrate-btn-start" class="action-btn">Start calibration</button>
         <button id="calibrate-btn-finish" class="action-btn">Finish calibration</button>
-        <input type="range" id="power-slider" class="settings-input"></div>
+
+        <button id="reload-btn" class="action-btn">Reload</button>
+        <input type="range" id="power-slider" class="settings-input">
         <div id="nerfbot_infos">
             <div>
                 <div id="nerfbot_base_ws_status">connecting base...</div>

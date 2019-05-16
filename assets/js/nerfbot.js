@@ -5,13 +5,26 @@ const settings = require('./settings');
 import nipplejs from 'nipplejs';
 const Magazine = require('./classes/Magazine');
 
+function openFullscreen() {
+	if (elem.requestFullscreen) {
+	  elem.requestFullscreen();
+	} else if (elem.mozRequestFullScreen) { /* Firefox */
+	  elem.mozRequestFullScreen();
+	} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+	  elem.webkitRequestFullscreen();
+	} else if (elem.msRequestFullscreen) { /* IE/Edge */
+	  elem.msRequestFullscreen();
+	}
+  }
+  
+
 
 var baseMinSpeed = 80;
 var maxSpeed = c.HIGH;
 
 var keyMapMovement = {'w':false, 'a':false, 's':false, 'd':false};
 var keyMapTurret = {'i':false, 'k':false, 'j':false, 'l':false};
-var keyMapShooting = {'u':false, 'o':false};
+var keyMapShooting = {space:false};
 var baseUpdateMap = {'speedX':0, 'speedY': 0};
 var turretUpdateMap = {'speedX':0, 'speedY': 0};
 
@@ -25,6 +38,10 @@ var nerfbotTurretServer = new WebSocket(settings.ws_turret_handling);
 
 window.nerfbotBaseServer = nerfbotBaseServer;
 window.nerfbotTurretServer = nerfbotTurretServer;
+
+
+var magazine = new Magazine("#magazine", 12);
+
 
 nerfbotBaseServer.onopen = function() {
 	console.log("[WebSocket] connected");
@@ -86,7 +103,7 @@ nerfbotTurretServer.onmessage = function(event) {
 ////////////// send packets to websocket //////////////
 ///////////////////////////////////////////////////////
 
-
+var lastTurretObj;
 function wsUpdate() {
 		var baseObj = {
 			type: c.MSG_MOVE,
@@ -103,7 +120,12 @@ function wsUpdate() {
 	$("#nerfbot_vertical_movement").text("speedX:" + turretUpdateMap.speedX + " speedY:" + turretUpdateMap.speedY);
 
 	sendCommandToBase(JSON.stringify(baseObj));
-	//sendCommandToTurret(JSON.stringify(turretObj));
+
+	//prevent sending a move 0 after clicking on video to move
+	if(JSON.stringify(lastTurretObj) != JSON.stringify(turretObj)) {
+		sendCommandToTurret(JSON.stringify(turretObj));
+		lastTurretObj = turretObj;
+	}
 
 	setTimeout(wsUpdate, 1000/c.UPDATE_RATE);
 }
@@ -120,7 +142,7 @@ function moveTurret(speedX, speedY) {
 }
 
 function turretGoToPosition(positionX, positionY, speedX, speedY) {
-	console.log("turretGoToPosition", positionX, positionY, speedX, speedY);
+	//console.log("turretGoToPosition", positionX, positionY, speedX, speedY);
 	var obj = {
 		type: c.MSG_TURRET_GOTO_POSITION,
 		positionX: positionX,
@@ -134,7 +156,7 @@ function turretGoToPosition(positionX, positionY, speedX, speedY) {
 window.turretGoToPosition = turretGoToPosition;
 
 function turretGoToAngle(angleX, angleY, speedX, speedY) {
-	console.log("turretGoToAngle", angleX, angleY, speedX, speedY);
+	//console.log("turretGoToAngle", angleX, angleY, speedX, speedY);
 	var obj = {
 		type: c.MSG_TURRET_GOTO_ANGLE,
 		angleX: angleX,
@@ -146,7 +168,7 @@ function turretGoToAngle(angleX, angleY, speedX, speedY) {
 }
 
 function turretMovePosition(directionX, directionY, positionX, positionY, speedX, speedY) {
-	console.log("turretMovePosition", directionX, directionY, positionX, positionY, speedX, speedY);
+	//console.log("turretMovePosition", directionX, directionY, positionX, positionY, speedX, speedY);
 	var obj = {
 		type: c.MSG_TURRET_MOVE_POSITION,
 		directionX: directionX,
@@ -160,7 +182,7 @@ function turretMovePosition(directionX, directionY, positionX, positionY, speedX
 }
 
 function turretMoveAngle(directionX, directionY, angleX, angleY, speedX, speedY) {
-	console.log("turretMoveAngle", directionX, directionY, angleX, angleY, speedX, speedY);
+	//console.log("turretMoveAngle", directionX, directionY, angleX, angleY, speedX, speedY);
 	var obj = {
 		type: c.MSG_TURRET_MOVE_ANGLE,
 		directionX: directionX,
@@ -175,7 +197,7 @@ function turretMoveAngle(directionX, directionY, angleX, angleY, speedX, speedY)
 
 function shoot(speed)
 {
-	console.log("shoot")
+	//console.log("shoot")
 	var obj = {
 		type: c.MSG_SHOOT,
 		speed: speed
@@ -186,7 +208,7 @@ function shoot(speed)
 
 function calibrateStart()
 {
-	console.log("calibrate start")
+	//console.log("calibrate start")
 	var obj = {
 		type: c.MSG_CALIBRATE_START
 	}
@@ -197,7 +219,7 @@ function calibrateStart()
 
 function calibrateFinish()
 {
-	console.log("calibrate finish")
+	//console.log("calibrate finish")
 	var obj = {
 		type: c.MSG_CALIBRATE_FINISH
 	}
@@ -227,7 +249,7 @@ var fcnHandleMapChangeMovement = function() {
 }
 
 var fcnHandleMapChangeTurret = function() {
-	console.log(keyMapTurret);
+	//console.log(keyMapTurret);
 	if(keyMapTurret.i && keyMapTurret.k) {return;}	
 	if(keyMapTurret.j && keyMapTurret.l) {return;}
 	
@@ -246,6 +268,10 @@ var fcnHandleMapChangeTurret = function() {
 }
 
 var fcnHandleMapChangeShooting = function() {
+	if(keyMapShooting.space) {
+		shoot(currentPower);
+		magazine.dartUsed();
+	}
 
 }
 
@@ -253,7 +279,6 @@ $(document).keyup(function(event) {
 	var oldMapMovement = JSON.stringify(keyMapMovement);
 	var oldMapVertical = JSON.stringify(keyMapTurret);
 	var oldMapShooting = JSON.stringify(keyMapShooting);
-	
 	switch(event.key) {
 		case 'w': keyMapMovement.w = false; break;
 		case 'a': keyMapMovement.a = false; break;
@@ -263,6 +288,7 @@ $(document).keyup(function(event) {
 		case 'j': keyMapTurret.j = false; break;
 		case 'k': keyMapTurret.k = false; break;
 		case 'l': keyMapTurret.l = false; break;
+		case ' ': keyMapShooting.space = false; break;
 		
 		default:{break;}
 	}
@@ -301,6 +327,7 @@ $(document).keydown(function(event) {
 		case 'j': keyMapTurret.j = true; break;	
 		case 'k': keyMapTurret.k = true; break;	
 		case 'l': keyMapTurret.l = true; break;	
+		case ' ': keyMapShooting.space = true; break;
 		default:{break;}
 	}
 	var newMapMovement = JSON.stringify(keyMapMovement);
@@ -388,11 +415,11 @@ $(document).ready(function() {
 		var rpm = data.distance;
 		var rpmX = rpm*Math.sin(data.angle.radian);
 		var rpmY = rpm*Math.cos(data.angle.radian);
-		console.log(rpmX, rpmY);
+		//console.log(rpmX, rpmY);
 		//rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
 		//rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));
-		rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM*Math.pow(Math.abs(rpmX/100), 2));
-		rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM*Math.pow(Math.abs(rpmY/100), 2));
+		rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM*Math.pow(Math.abs(rpmX/100), 4));
+		rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM*Math.pow(Math.abs(rpmY/100), 4));
 		
 		moveTurret(rpmX, rpmY);
 	});
@@ -401,9 +428,8 @@ $(document).ready(function() {
 		moveTurret(0, 0);
 	});	
 
-
-	var magazine = new Magazine("#magazine", 12);
 	magazine.refresh();
+
 	
 	$('#shoot-btn').on('click', function() {
 		shoot(currentPower);
@@ -436,7 +462,6 @@ $(document).ready(function() {
 	$("#power-slider").val(c.FLYWHEEL_MIN_SPEED);
 	$("#power-slider").on("change", function(val) {
 		currentPower = $("#power-slider").val();
-		console.log(currentPower);
 	});
 
 
@@ -456,6 +481,9 @@ $(document).ready(function() {
 
 		turretMoveAngle(angleX>=0?c.RIGHT:c.LEFT, angleY>=0?c.UP:c.DOWN, Math.abs(angleX), Math.abs(angleY), speedX, speedY);
 	});		
+
+
+	openFullscreen();	
 });
 
 

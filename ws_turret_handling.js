@@ -33,8 +33,14 @@ wss.on('connection', function connection(ws) {
           arduinoWrapper.calibrateFinish();
         }     
         else if(messageObject.type == c.MSG_TURRET_MOVE_ANGLE) {
-          arduinoWrapper.moveAngle(messageObject.directionX==c.LEFT?c.ARDUINO.BACKWARDS:c.ARDUINO.FORWARD, messageObject.speedX, messageObject.angleX, messageObject.directionY==c.UP?c.ARDUINO.BACKWARDS:c.ARDUINO.FORWARD, messageObject.speedY, messageObject.angleY);
-        }                               
+          let directionX = messageObject.directionX==c.LEFT?c.ARDUINO.FORWARD:c.ARDUINO.BACKWARDS;
+          let directionY = messageObject.directionY==c.UP?c.ARDUINO.BACKWARDS:c.ARDUINO.FORWARD;
+
+          arduinoWrapper.moveAngle(directionX, messageObject.speedX, messageObject.angleX, directionY, messageObject.speedY, messageObject.angleY);
+        }  
+        else if(messageObject.type == c.MSG_TURRET_GOTO_POSITION) {
+          arduinoWrapper.goToPosition(messageObject.speedX, messageObject.positionX, messageObject.speedY, messageObject.positionY);
+        }                                      
         ws.send("ok");
       }
       catch(e) {

@@ -98,7 +98,9 @@ module.exports = {
   LOW: 0,
   TIMEOUT_MS: 200,
   MAX_TILT_RPM: 80,
+  //Y
   MAX_PAN_RPM: 80,
+  //X
   FLYWHEEL_MIN_SPEED: 18,
   FLYWHEEL_MAX_SPEED: 50,
   UPDATE_RATE: 20
@@ -253,6 +255,8 @@ function turretGoToPosition(positionX, positionY, speedX, speedY) {
   };
   sendCommandToTurret(JSON.stringify(obj));
 }
+
+window.turretGoToPosition = turretGoToPosition;
 
 function turretGoToAngle(angleX, angleY, speedX, speedY) {
   console.log("turretGoToAngle", angleX, angleY, speedX, speedY);
@@ -671,14 +675,15 @@ $(document).ready(function () {
   });
   $("#stream_02_overlay").on("click", function (e) {
     var offset = this.getClientRects()[0];
-    var positionX = e.clientX - offset.left - this.clientWidth / 2;
-    var positionY = e.clientY - offset.top - this.clientHeight / 2;
-    var fovX = 50;
-    var fovY = 35;
-    var angleX = fovX / this.clientWidth * positionX;
-    var angleY = -fovY / this.clientHeight * positionY;
-    turretMoveAngle(angleY < 0 ? c.RIGHT : c.LEFT, angleX < 0 ? c.DOWN : c.UP, Math.abs(angleY), Math.abs(angleX), 10, 20);
-    console.log(angleX, angleY);
+    var clickPosX = e.clientX - offset.left - this.clientWidth / 2;
+    var clickPosY = e.clientY - offset.top - this.clientHeight / 2;
+    var fovX = 32.8;
+    var fovY = 43.5;
+    var angleX = fovX / this.clientWidth * clickPosX;
+    var angleY = -fovY / this.clientHeight * clickPosY;
+    var speedX = 6;
+    var speedY = 12;
+    turretMoveAngle(angleX >= 0 ? c.RIGHT : c.LEFT, angleY >= 0 ? c.UP : c.DOWN, Math.abs(angleX), Math.abs(angleY), speedX, speedY);
   });
 });
 

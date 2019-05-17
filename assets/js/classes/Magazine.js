@@ -14,6 +14,7 @@ module.exports = class Magazine  {
     }
 
     reload() {
+        console.log("reload");
         this.current_darts = this.n_darts;
         this.refresh();
     }
@@ -23,9 +24,9 @@ module.exports = class Magazine  {
         
         var html = $("<div class='darts-container'/>");
         html.append($("<div>"+ this.current_darts + "/" +  this.n_darts + "</div>"));
-        for(var i=0;i<this.current_darts;i++) {
-            html.append($("<img class='dart' src='images/dart.png'></img>"));
-        }
+        //for(var i=0;i<this.current_darts;i++) {
+        //    html.append($("<img class='dart' src='images/dart.png'></img>"));
+        //}
         
         $(this.container).html(html);
     }

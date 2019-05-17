@@ -1,3 +1,11 @@
+
+body { 
+	background: url(images/background.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+  }
 .nerfbot_video  {
 	width:100%;
 	height:100%;
@@ -85,7 +93,7 @@ body {
 	width:50%;
 	top:0;
 	left:0;
-	background-color: lightblue;
+	background-color: transparent;
 	transform: rotate(180deg);
 }
 
@@ -93,7 +101,7 @@ body {
 	width:50%;
 	top:0;
 	right:0;
-	background-color: lightpink;
+	background-color: transparent;
 	border-left:1px solid white;
 }
 
@@ -108,43 +116,33 @@ body {
 }
 
 #turret_crosshair {
-	width:120px;
-	height: 120px;
+	width:16px;
+	height: 16px;
 	z-index: 1000;	
 	display: block;
 	top: 50%;
 	left: 50%;
-	margin-top: -70px;
-	margin-left: -60px;
+	margin-top: -8px;
+	margin-left: -8px;
 	position: absolute;
 
 }
 
 
 #magazine {
-	position: fixed;
-	bottom: 25px;
-	right: 34%;
-	width: 40%;
-	height: 160px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 70px;
+	height: 30px;
 	background-color: transparent;
 	opacity: 0.9;
 	color: white;
 	font-size: 28px;
 }
 
-.darts-container {
-	position: absolute;
-	right : 10px;
-	width : 360px;
-	margin: auto;
-}
 
-.dart {
-	width: 20px;
-	padding-left: 4px;
-	padding-right: 4px;
-}
+
 
 .action-btn {
 	text-align: center;
@@ -153,21 +151,21 @@ body {
 	
 	
 	height: 80px;
-	width: 500px;
+	width: 200px;
 	border-radius: 10px;
 	background-color: #555555;
 	border: 4px solid white;
 	color: #888888;
-	font-size: 50px;
+	font-size: 30px;
 	opacity: 0.8;
 }
 
 .action-btn-icon {
 	text-align: center;
-	z-index: 100;
+	z-index: 1000;
 	position: fixed;
-	height: 80px;
-	width: 80px;
+	height: 200px;
+	width: 200px;
 	color: #888888;
 	opacity: 0.8;	
 	background-color: transparent;
@@ -176,12 +174,12 @@ body {
 
 #shoot-btn {
 	right: 300px;
-	bottom: 70px;
+	bottom: 50px;
 }
 
 #reload-btn {
-	right: 440px;
-	bottom: 70px;
+	left: 40px;
+	top: 180px;
 }
 
 #calibrate-btn-start {
@@ -190,15 +188,27 @@ body {
 }
 
 #calibrate-btn-finish {
-	left: 40px;
-	top: 130px;
+	left: 300px;
+	top: 40px;
 }
 
+#power-slider {
+	left: 40px;
+	top: 340px;
+	width: 420px;
+}
+
+.settings-input {
+	z-index: 100;
+	position: fixed;
+	opacity: 0.8;	
+	background-color: transparent;
+}
 
 .btn-icon {
 	margin: auto;
-	width:80px;
-	height: 80px;
+	width:200px;
+	height: 200px;
 	z-index: 1000;
 }
 
@@ -211,11 +221,11 @@ body {
 	left: 0px;
 	background: #222222;
 	color: white;
-	border: 5px white solid;
 	display:none;
 }
 
 #close-settings {
-	right: 40px;
+	right: 20px;
 	top: 40px;
+	width: 100px;
 }

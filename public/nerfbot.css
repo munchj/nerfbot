@@ -44,8 +44,7 @@ body {
 	position: fixed;
 	bottom: 0;
 	left: 0;
-	background-color: #111111;
-
+	background-color:rgba(0,0,0,0.6);
 	display:flex;
 	justify-content: space-around;
 }
@@ -229,3 +228,13 @@ body {
 	top: 40px;
 	width: 100px;
 }
+
+#speedGaugeContainer {
+	display:flex;
+	justify-content: center;
+	width: 100%;
+	position: fixed;
+	bottom: 30px;
+	height: 160px;
+}
+

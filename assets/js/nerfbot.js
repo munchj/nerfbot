@@ -3,24 +3,11 @@ global.jQuery = $;
 const c = require('./constants');
 const settings = require('./settings');
 import nipplejs from 'nipplejs';
+const {Gauge} = require('gaugeJS');
 const Magazine = require('./classes/Magazine');
 
-function openFullscreen() {
-	if (elem.requestFullscreen) {
-	  elem.requestFullscreen();
-	} else if (elem.mozRequestFullScreen) { /* Firefox */
-	  elem.mozRequestFullScreen();
-	} else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-	  elem.webkitRequestFullscreen();
-	} else if (elem.msRequestFullscreen) { /* IE/Edge */
-	  elem.msRequestFullscreen();
-	}
-  }
-  
 
 
-var baseMinSpeed = 80;
-var maxSpeed = c.HIGH;
 
 var keyMapMovement = {'w':false, 'a':false, 's':false, 'd':false};
 var keyMapTurret = {'i':false, 'k':false, 'j':false, 'l':false};
@@ -29,6 +16,34 @@ var baseUpdateMap = {'speedX':0, 'speedY': 0};
 var turretUpdateMap = {'speedX':0, 'speedY': 0};
 
 var currentPower = c.FLYWHEEL_MIN_SPEED;
+
+var gaugeOpts = {
+  angle: 0, /// The span of the gauge arc
+  lineWidth: 0.54, // The line thickness
+  pointer: {
+    length: 0.9, // Relative to gauge radius
+    strokeWidth: 0.035 // The thickness
+  },
+  colorStart: '#FFFFFF',   
+  colorStop: '#DDDDDD',    
+  strokeColor: '#888888'   
+};
+
+var gauge;
+$(document).ready(function () {
+	var gaugeCanvas = document.getElementById("speedGauge");
+	console.log(gaugeCanvas);
+	if(gaugeCanvas) {
+		gauge = new Gauge(gaugeCanvas).setOptions(gaugeOpts);
+		gauge.animationSpeed = 10;
+		gauge.maxValue = c.MAX_CAR_SPEED;
+		gauge.setMinValue(c.MIN_CAR_SPEED);
+		gauge.set(0);
+	}
+});
+
+
+
 
 ///////////////////////////////////////////////
 ////////////// websocket client  //////////////
@@ -234,16 +249,16 @@ var fcnHandleMapChangeMovement = function() {
 	if(keyMapMovement.w && keyMapMovement.s) {return;}
 	if(keyMapMovement.a && keyMapMovement.d) {return;}
 	
-	if(keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) { moveBase(maxSpeed, 0); return;}
-	if(keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) { moveBase(maxSpeed, -maxSpeed); return;}
-	if(keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) { moveBase(maxSpeed, maxSpeed); return;}
+	if(keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) { moveBase(c.MAX_CAR_SPEED, 0); return;}
+	if(keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) { moveBase(c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) { moveBase(c.MAX_CAR_SPEED, c.MAX_CAR_SPEED); return;}
 	
-	if(keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) { moveBase(-maxSpeed, 0); return;}
-	if(keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) { moveBase(-maxSpeed, -maxSpeed); return;}
-	if(keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) { moveBase(-maxSpeed, maxSpeed); return;}
+	if(keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) { moveBase(-c.MAX_CAR_SPEED, 0); return;}
+	if(keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) { moveBase(-c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) { moveBase(-c.MAX_CAR_SPEED, c.MAX_CAR_SPEED); return;}
 	
-	if(keyMapMovement.a) { moveBase(0, -maxSpeed); return;}
-	if(keyMapMovement.d) { moveBase(0, maxSpeed); return;}
+	if(keyMapMovement.a) { moveBase(0, -c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.d) { moveBase(0, c.MAX_CAR_SPEED); return;}
 	
 	if(!keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.s && !keyMapMovement.d) { moveBase(0, 0); return;}
 }
@@ -389,15 +404,37 @@ $(document).ready(function() {
 		var speed = data.distance;
 		var speedX = speed*Math.sin(data.angle.radian);
 		var speedY = speed*Math.cos(data.angle.radian);
+
+		var directionX = speedX > 0?1:-1;
+		var directionY = speedY > 0?1:-1;
 		
+		speedX =  Math.round((c.MAX_CAR_SPEED-c.MIN_CAR_SPEED)*Math.pow(Math.abs(speedX/100), 10));
+		speedY =  Math.round((c.MAX_CAR_SPEED-c.MIN_CAR_SPEED)*Math.pow(Math.abs(speedY/100), 10));
+		
+		if(speedX>0) speedX += c.MIN_CAR_SPEED;
+		if(speedY>0) speedY += c.MIN_CAR_SPEED;
+
+		if(speedX>speedY) {
+			speedY = 0;
+			gauge.options.colorStop = '#9fc2fc';
+
+		} else {
+			gauge.options.colorStop = '#fcd29f';
+			speedX = 0;
+		}
+		
+		gauge.set(Math.max(speedX, speedY));
 		//avoid moving immediately
-		speedX = remapBaseSpeed(readjustSpeed(speedX));
-		speedY = remapBaseSpeed(readjustSpeed(speedY));
+
+
+		//speedX = remapBaseSpeed(readjustSpeed(speedX));
+		//speedY = remapBaseSpeed(readjustSpeed(speedY));
 		
-		moveBase(speedX,speedY);
+		moveBase(directionX * speedX, directionY * speedY);
 	});
 	
 	leftJoystick.get(0).on("end", function(evt) {
+		gauge.set(0);
 		moveBase(0,0);
 	});
 	
@@ -483,7 +520,6 @@ $(document).ready(function() {
 	});		
 
 
-	openFullscreen();	
 });
 
 

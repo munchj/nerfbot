@@ -49,8 +49,11 @@ module.exports = {
     
     TIMEOUT_MS : 200,
 
-    MAX_TILT_RPM : 80, //Y
-    MAX_PAN_RPM: 80, //X
+    MIN_CAR_SPEED : 40,
+    MAX_CAR_SPEED : 255,
+
+    MAX_TILT_RPM : 20, //Y
+    MAX_PAN_RPM: 20, //X
 
     FLYWHEEL_MIN_SPEED: 18,
     FLYWHEEL_MAX_SPEED: 50,

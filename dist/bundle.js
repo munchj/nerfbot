@@ -130,19 +130,19 @@ var _require = require('gaugeJS'),
 var Magazine = require('./classes/Magazine');
 
 var keyMapMovement = {
-  'w': false,
-  'a': false,
-  's': false,
-  'd': false
+  mv_forward: false,
+  mv_left: false,
+  mv_backwards: false,
+  mv_right: false
 };
 var keyMapTurret = {
-  'i': false,
-  'k': false,
-  'j': false,
-  'l': false
+  mv_up: false,
+  mv_down: false,
+  mv_left: false,
+  mv_right: false
 };
 var keyMapShooting = {
-  space: false
+  shoot: false
 };
 var baseUpdateMap = {
   'speedX': 0,
@@ -367,55 +367,55 @@ function calibrateFinish() {
 
 
 var fcnHandleMapChangeMovement = function fcnHandleMapChangeMovement() {
-  if (keyMapMovement.w && keyMapMovement.s) {
+  if (keyMapMovement.mv_forward && keyMapMovement.mv_backwards) {
     return;
   }
 
-  if (keyMapMovement.a && keyMapMovement.d) {
+  if (keyMapMovement.mv_left && keyMapMovement.mv_right) {
     return;
   }
 
-  if (keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) {
+  if (keyMapMovement.mv_forward && !keyMapMovement.mv_left && !keyMapMovement.mv_right) {
     moveBase(c.MAX_CAR_SPEED, 0);
     return;
   }
 
-  if (keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) {
+  if (keyMapMovement.mv_forward && keyMapMovement.mv_left && !keyMapMovement.mv_right) {
     moveBase(c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED);
     return;
   }
 
-  if (keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) {
+  if (keyMapMovement.mv_forward && !keyMapMovement.mv_left && keyMapMovement.mv_right) {
     moveBase(c.MAX_CAR_SPEED, c.MAX_CAR_SPEED);
     return;
   }
 
-  if (keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) {
+  if (keyMapMovement.mv_backwards && !keyMapMovement.mv_left && !keyMapMovement.mv_right) {
     moveBase(-c.MAX_CAR_SPEED, 0);
     return;
   }
 
-  if (keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) {
+  if (keyMapMovement.mv_backwards && keyMapMovement.mv_left && !keyMapMovement.mv_right) {
     moveBase(-c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED);
     return;
   }
 
-  if (keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) {
+  if (keyMapMovement.mv_backwards && !keyMapMovement.mv_left && keyMapMovement.mv_right) {
     moveBase(-c.MAX_CAR_SPEED, c.MAX_CAR_SPEED);
     return;
   }
 
-  if (keyMapMovement.a) {
+  if (keyMapMovement.mv_left) {
     moveBase(0, -c.MAX_CAR_SPEED);
     return;
   }
 
-  if (keyMapMovement.d) {
+  if (keyMapMovement.mv_right) {
     moveBase(0, c.MAX_CAR_SPEED);
     return;
   }
 
-  if (!keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.s && !keyMapMovement.d) {
+  if (!keyMapMovement.mv_forward && !keyMapMovement.mv_left && !keyMapMovement.mv_backwards && !keyMapMovement.mv_right) {
     moveBase(0, 0);
     return;
   }
@@ -423,55 +423,55 @@ var fcnHandleMapChangeMovement = function fcnHandleMapChangeMovement() {
 
 var fcnHandleMapChangeTurret = function fcnHandleMapChangeTurret() {
   //console.log(keyMapTurret);
-  if (keyMapTurret.i && keyMapTurret.k) {
+  if (keyMapTurret.mv_up && keyMapTurret.mv_down) {
     return;
   }
 
-  if (keyMapTurret.j && keyMapTurret.l) {
+  if (keyMapTurret.mv_left && keyMapTurret.mv_right) {
     return;
   }
 
-  if (keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(c.MAX_PAN_RPM, 0);
+  if (keyMapTurret.mv_up && !keyMapTurret.mv_left && !keyMapTurret.mv_right) {
+    moveTurret(0, c.MAX_PAN_RPM);
     return;
   }
 
-  if (keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(c.MAX_PAN_RPM, -c.MAX_TILT_RPM);
+  if (keyMapTurret.mv_up && keyMapTurret.mv_left && !keyMapTurret.mv_right) {
+    moveTurret(-c.MAX_TILT_RPM, c.MAX_PAN_RPM);
     return;
   }
 
-  if (keyMapTurret.i && !keyMapTurret.j && keyMapTurret.l) {
-    moveTurret(c.MAX_PAN_RPM, c.MAX_TILT_RPM);
+  if (keyMapTurret.mv_up && !keyMapTurret.mv_left && keyMapTurret.mv_right) {
+    moveTurret(c.MAX_TILT_RPM, c.MAX_PAN_RPM);
     return;
   }
 
-  if (keyMapTurret.k && !keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(-c.MAX_PAN_RPM, 0);
+  if (keyMapTurret.mv_down && !keyMapTurret.mv_left && !keyMapTurret.mv_right) {
+    moveTurret(0, -c.MAX_PAN_RPM);
     return;
   }
 
-  if (keyMapTurret.k && keyMapTurret.j && !keyMapTurret.l) {
-    moveTurret(-c.MAX_PAN_RPM, -c.MAX_TILT_RPM);
+  if (keyMapTurret.mv_down && keyMapTurret.mv_left && !keyMapTurret.mv_right) {
+    moveTurret(-c.MAX_TILT_RPM, -c.MAX_PAN_RPM);
     return;
   }
 
-  if (keyMapTurret.k && !keyMapTurret.j && keyMapTurret.l) {
-    moveTurret(-c.MAX_PAN_RPM, c.MAX_TILT_RPM);
+  if (keyMapTurret.mv_down && !keyMapTurret.mv_left && keyMapTurret.mv_right) {
+    moveTurret(c.MAX_TILT_RPM, -c.MAX_PAN_RPM);
     return;
   }
 
-  if (keyMapTurret.j) {
-    moveTurret(0, -c.MAX_TILT_RPM);
+  if (keyMapTurret.mv_left) {
+    moveTurret(-c.MAX_TILT_RPM, 0);
     return;
   }
 
-  if (keyMapTurret.l) {
-    moveTurret(0, c.MAX_TILT_RPM);
+  if (keyMapTurret.mv_right) {
+    moveTurret(c.MAX_TILT_RPM, 0);
     return;
   }
 
-  if (!keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.k && !keyMapTurret.l) {
+  if (!keyMapTurret.mv_up && !keyMapTurret.mv_left && !keyMapTurret.mv_down && !keyMapTurret.mv_right) {
     moveTurret(0, 0);
     return;
   }
@@ -491,39 +491,39 @@ $(document).keyup(function (event) {
 
   switch (event.key) {
     case 'w':
-      keyMapMovement.w = false;
+      keyMapMovement.mv_forward = false;
       break;
 
     case 'a':
-      keyMapMovement.a = false;
+      keyMapMovement.mv_left = false;
       break;
 
     case 's':
-      keyMapMovement.s = false;
+      keyMapMovement.mv_backwards = false;
       break;
 
     case 'd':
-      keyMapMovement.d = false;
+      keyMapMovement.mv_right = false;
       break;
 
     case 'i':
-      keyMapTurret.i = false;
+      keyMapTurret.mv_up = false;
       break;
 
     case 'j':
-      keyMapTurret.j = false;
+      keyMapTurret.mv_left = false;
       break;
 
     case 'k':
-      keyMapTurret.k = false;
+      keyMapTurret.mv_down = false;
       break;
 
     case 'l':
-      keyMapTurret.l = false;
+      keyMapTurret.mv_right = false;
       break;
 
     case ' ':
-      keyMapShooting.space = false;
+      keyMapShooting.shoot = false;
       break;
 
     default:
@@ -555,39 +555,39 @@ $(document).keydown(function (event) {
 
   switch (event.key) {
     case 'w':
-      keyMapMovement.w = true;
+      keyMapMovement.mv_forward = true;
       break;
 
     case 'a':
-      keyMapMovement.a = true;
+      keyMapMovement.mv_left = true;
       break;
 
     case 's':
-      keyMapMovement.s = true;
+      keyMapMovement.mv_backwards = true;
       break;
 
     case 'd':
-      keyMapMovement.d = true;
+      keyMapMovement.mv_right = true;
       break;
 
     case 'i':
-      keyMapTurret.i = true;
+      keyMapTurret.mv_up = true;
       break;
 
     case 'j':
-      keyMapTurret.j = true;
+      keyMapTurret.mv_left = true;
       break;
 
     case 'k':
-      keyMapTurret.k = true;
+      keyMapTurret.mv_down = true;
       break;
 
     case 'l':
-      keyMapTurret.l = true;
+      keyMapTurret.mv_right = true;
       break;
 
     case ' ':
-      keyMapShooting.space = true;
+      keyMapShooting.shoot = true;
       break;
 
     default:
@@ -614,32 +614,6 @@ $(document).keydown(function (event) {
 }); ///////////////////////////////////////
 ////////////// nipplejs ///////////////
 ///////////////////////////////////////
-
-var readjustSpeed = function readjustSpeed(speed) {
-  var tmp = 0;
-
-  if (speed <= 10 && speed >= -10) {
-    tmp = 0;
-  } else if (speed > 10) {
-    tmp = (speed - 10) * maxSpeed / 90;
-  } else if (speed < -10) {
-    tmp = (speed + 10) * maxSpeed / 90;
-  }
-
-  return Math.round(tmp);
-};
-
-var remapBaseSpeed = function remapBaseSpeed(speed) {
-  var delta = maxSpeed - baseMinSpeed;
-
-  if (speed > 0) {
-    return Math.round(baseMinSpeed + speed / maxSpeed * delta);
-  } else if (speed < 0) {
-    return Math.round(-baseMinSpeed + speed / maxSpeed * delta);
-  }
-
-  return 0;
-};
 
 $(document).ready(function () {
   var leftJoystickOptions = {
@@ -700,8 +674,8 @@ $(document).ready(function () {
 
   rightJoystick.get(1).on("move", function (evt, data) {
     var rpm = data.distance;
-    var rpmX = rpm * Math.sin(data.angle.radian);
-    var rpmY = rpm * Math.cos(data.angle.radian); //console.log(rpmX, rpmY);
+    var rpmX = rpm * Math.cos(data.angle.radian);
+    var rpmY = rpm * Math.sin(data.angle.radian); //console.log(rpmX, rpmY);
     //rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
     //rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));
 
@@ -763,14 +737,6 @@ module.exports = {
   //ws_base_camera : "ws:\/\/192.168.43.9:1338",
   //ws_turret_handling : "ws:\/\/192.168.43.240:1339",
   //ws_turret_camera : "ws:\/\/192.168.43.240:1340",
-<<<<<<< HEAD
-  ws_base_handling: "ws:\/\/192.168.1.24:1337",
-  ws_base_camera: "ws:\/\/192.168.1.24:1338",
-  ws_turret_handling: "ws:\/\/192.168.1.22:1339",
-  ws_turret_camera: "ws:\/\/192.168.1.22:1340",
-  //ws_turret_handling : "ws:\/\/julien-desktop:1339",
-=======
->>>>>>> c55439f04e702520dcaafd06ca194d9b5e1424d6
   ws_tilt_stepper_port: 1341,
   ws_pan_stepper_port: 1342,
   ttyPort: '/dev/ttyUSB0',

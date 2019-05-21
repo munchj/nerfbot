@@ -9,9 +9,9 @@ const Magazine = require('./classes/Magazine');
 
 
 
-var keyMapMovement = {'w':false, 'a':false, 's':false, 'd':false};
-var keyMapTurret = {'i':false, 'k':false, 'j':false, 'l':false};
-var keyMapShooting = {space:false};
+var keyMapMovement = {mv_forward:false, mv_left:false, mv_backwards:false, mv_right:false};
+var keyMapTurret = {mv_up:false, mv_down:false, mv_left:false, mv_right:false};
+var keyMapShooting = {shoot:false};
 var baseUpdateMap = {'speedX':0, 'speedY': 0};
 var turretUpdateMap = {'speedX':0, 'speedY': 0};
 
@@ -248,40 +248,40 @@ function calibrateFinish()
 ////////////// keyboard management ///////////////
 //////////////////////////////////////////////////
 var fcnHandleMapChangeMovement = function() {
-	if(keyMapMovement.w && keyMapMovement.s) {return;}
-	if(keyMapMovement.a && keyMapMovement.d) {return;}
+	if(keyMapMovement.mv_forward && keyMapMovement.mv_backwards) {return;}
+	if(keyMapMovement.mv_left && keyMapMovement.mv_right) {return;}
 	
-	if(keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.d) { moveBase(c.MAX_CAR_SPEED, 0); return;}
-	if(keyMapMovement.w && keyMapMovement.a && !keyMapMovement.d) { moveBase(c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED); return;}
-	if(keyMapMovement.w && !keyMapMovement.a && keyMapMovement.d) { moveBase(c.MAX_CAR_SPEED, c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.mv_forward && !keyMapMovement.mv_left && !keyMapMovement.mv_right) { moveBase(c.MAX_CAR_SPEED, 0); return;}
+	if(keyMapMovement.mv_forward && keyMapMovement.mv_left && !keyMapMovement.mv_right) { moveBase(c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.mv_forward && !keyMapMovement.mv_left && keyMapMovement.mv_right) { moveBase(c.MAX_CAR_SPEED, c.MAX_CAR_SPEED); return;}
 	
-	if(keyMapMovement.s && !keyMapMovement.a && !keyMapMovement.d) { moveBase(-c.MAX_CAR_SPEED, 0); return;}
-	if(keyMapMovement.s && keyMapMovement.a && !keyMapMovement.d) { moveBase(-c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED); return;}
-	if(keyMapMovement.s && !keyMapMovement.a && keyMapMovement.d) { moveBase(-c.MAX_CAR_SPEED, c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.mv_backwards && !keyMapMovement.mv_left && !keyMapMovement.mv_right) { moveBase(-c.MAX_CAR_SPEED, 0); return;}
+	if(keyMapMovement.mv_backwards && keyMapMovement.mv_left && !keyMapMovement.mv_right) { moveBase(-c.MAX_CAR_SPEED, -c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.mv_backwards && !keyMapMovement.mv_left && keyMapMovement.mv_right) { moveBase(-c.MAX_CAR_SPEED, c.MAX_CAR_SPEED); return;}
 	
-	if(keyMapMovement.a) { moveBase(0, -c.MAX_CAR_SPEED); return;}
-	if(keyMapMovement.d) { moveBase(0, c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.mv_left) { moveBase(0, -c.MAX_CAR_SPEED); return;}
+	if(keyMapMovement.mv_right) { moveBase(0, c.MAX_CAR_SPEED); return;}
 	
-	if(!keyMapMovement.w && !keyMapMovement.a && !keyMapMovement.s && !keyMapMovement.d) { moveBase(0, 0); return;}
+	if(!keyMapMovement.mv_forward && !keyMapMovement.mv_left && !keyMapMovement.mv_backwards && !keyMapMovement.mv_right) { moveBase(0, 0); return;}
 }
 
 var fcnHandleMapChangeTurret = function() {
 	//console.log(keyMapTurret);
-	if(keyMapTurret.i && keyMapTurret.k) {return;}	
-	if(keyMapTurret.j && keyMapTurret.l) {return;}
+	if(keyMapTurret.mv_up && keyMapTurret.mv_down) {return;}	
+	if(keyMapTurret.mv_left && keyMapTurret.mv_right) {return;}
 	
-	if(keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, 0); return;}
-	if(keyMapTurret.i && keyMapTurret.j && !keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, -c.MAX_TILT_RPM); return;}
-	if(keyMapTurret.i && !keyMapTurret.j && keyMapTurret.l) { moveTurret(c.MAX_PAN_RPM, c.MAX_TILT_RPM); return;}
+	if(keyMapTurret.mv_up && !keyMapTurret.mv_left && !keyMapTurret.mv_right) { moveTurret(0, c.MAX_PAN_RPM); return;}
+	if(keyMapTurret.mv_up && keyMapTurret.mv_left && !keyMapTurret.mv_right) { moveTurret( -c.MAX_TILT_RPM, c.MAX_PAN_RPM); return;}
+	if(keyMapTurret.mv_up && !keyMapTurret.mv_left && keyMapTurret.mv_right) { moveTurret(c.MAX_TILT_RPM, c.MAX_PAN_RPM); return;}
 	
-	if(keyMapTurret.k && !keyMapTurret.j && !keyMapTurret.l) { moveTurret(-c.MAX_PAN_RPM, 0); return;}
-	if(keyMapTurret.k && keyMapTurret.j && !keyMapTurret.l) { moveTurret(-c.MAX_PAN_RPM, -c.MAX_TILT_RPM); return;}
-	if(keyMapTurret.k && !keyMapTurret.j && keyMapTurret.l) { moveTurret(-c.MAX_PAN_RPM, c.MAX_TILT_RPM); return;}
+	if(keyMapTurret.mv_down && !keyMapTurret.mv_left && !keyMapTurret.mv_right) { moveTurret(0, -c.MAX_PAN_RPM); return;}
+	if(keyMapTurret.mv_down && keyMapTurret.mv_left && !keyMapTurret.mv_right) { moveTurret( -c.MAX_TILT_RPM, -c.MAX_PAN_RPM); return;}
+	if(keyMapTurret.mv_down && !keyMapTurret.mv_left && keyMapTurret.mv_right) { moveTurret(c.MAX_TILT_RPM, -c.MAX_PAN_RPM); return;}
 	
-	if(keyMapTurret.j) { moveTurret(0, -c.MAX_TILT_RPM); return;}
-	if(keyMapTurret.l) { moveTurret(0, c.MAX_TILT_RPM); return;}
+	if(keyMapTurret.mv_left) { moveTurret(-c.MAX_TILT_RPM, 0); return;}
+	if(keyMapTurret.mv_right) { moveTurret( c.MAX_TILT_RPM, 0); return;}
 	
-	if(!keyMapTurret.i && !keyMapTurret.j && !keyMapTurret.k && !keyMapTurret.l) { moveTurret(0, 0); return;}
+	if(!keyMapTurret.mv_up && !keyMapTurret.mv_left && !keyMapTurret.mv_down && !keyMapTurret.mv_right) { moveTurret(0, 0); return;}
 }
 
 var fcnHandleMapChangeShooting = function() {
@@ -297,15 +297,15 @@ $(document).keyup(function(event) {
 	var oldMapVertical = JSON.stringify(keyMapTurret);
 	var oldMapShooting = JSON.stringify(keyMapShooting);
 	switch(event.key) {
-		case 'w': keyMapMovement.w = false; break;
-		case 'a': keyMapMovement.a = false; break;
-		case 's': keyMapMovement.s = false; break;
-		case 'd': keyMapMovement.d = false; break;
-		case 'i': keyMapTurret.i = false; break;
-		case 'j': keyMapTurret.j = false; break;
-		case 'k': keyMapTurret.k = false; break;
-		case 'l': keyMapTurret.l = false; break;
-		case ' ': keyMapShooting.space = false; break;
+		case 'w': keyMapMovement.mv_forward = false; break;
+		case 'a': keyMapMovement.mv_left = false; break;
+		case 's': keyMapMovement.mv_backwards = false; break;
+		case 'd': keyMapMovement.mv_right = false; break;
+		case 'i': keyMapTurret.mv_up = false; break;
+		case 'j': keyMapTurret.mv_left = false; break;
+		case 'k': keyMapTurret.mv_down = false; break;
+		case 'l': keyMapTurret.mv_right = false; break;
+		case ' ': keyMapShooting.shoot = false; break;
 		
 		default:{break;}
 	}
@@ -336,15 +336,15 @@ $(document).keydown(function(event) {
 	var oldMapShooting = JSON.stringify(keyMapShooting);
 	
 	switch(event.key) {
-		case 'w': keyMapMovement.w = true; break;
-		case 'a': keyMapMovement.a = true; break;	
-		case 's': keyMapMovement.s = true; break;	
-		case 'd': keyMapMovement.d = true; break;	
-		case 'i': keyMapTurret.i = true; break;	
-		case 'j': keyMapTurret.j = true; break;	
-		case 'k': keyMapTurret.k = true; break;	
-		case 'l': keyMapTurret.l = true; break;	
-		case ' ': keyMapShooting.space = true; break;
+		case 'w': keyMapMovement.mv_forward = true; break;
+		case 'a': keyMapMovement.mv_left = true; break;	
+		case 's': keyMapMovement.mv_backwards = true; break;	
+		case 'd': keyMapMovement.mv_right = true; break;	
+		case 'i': keyMapTurret.mv_up = true; break;	
+		case 'j': keyMapTurret.mv_left = true; break;	
+		case 'k': keyMapTurret.mv_down = true; break;	
+		case 'l': keyMapTurret.mv_right = true; break;	
+		case ' ': keyMapShooting.shoot = true; break;
 		default:{break;}
 	}
 	var newMapMovement = JSON.stringify(keyMapMovement);
@@ -372,26 +372,6 @@ $(document).keydown(function(event) {
 ///////////////////////////////////////
 ////////////// nipplejs ///////////////
 ///////////////////////////////////////
-var readjustSpeed = function(speed) {
-	var tmp = 0;
-	if(speed <= 10 && speed >= - 10) {tmp = 0;}
-	else if(speed > 10) {tmp = (speed - 10)*maxSpeed/90;}
-	else if(speed < -10) {tmp = (speed + 10)*maxSpeed/90;}
-	return Math.round(tmp);
-}
-
-
-var remapBaseSpeed = function(speed) {
-	const delta = maxSpeed - baseMinSpeed;
-	if(speed > 0) {
-		return Math.round(baseMinSpeed + ((speed / maxSpeed) * delta));
-	}
-	else if(speed < 0) {
-		return Math.round(-baseMinSpeed + ((speed / maxSpeed) * delta));
-	}
-	return 0;
-}
-
 $(document).ready(function() {
     var leftJoystickOptions = {
         zone: document.getElementById('nerfbot_left_joystick_container'),
@@ -452,8 +432,8 @@ $(document).ready(function() {
 
 	rightJoystick.get(1).on("move", function(evt, data) {
 		var rpm = data.distance;
-		var rpmX = rpm*Math.sin(data.angle.radian);
-		var rpmY = rpm*Math.cos(data.angle.radian);
+		var rpmX = rpm*Math.cos(data.angle.radian);
+		var rpmY = rpm*Math.sin(data.angle.radian);
 		//console.log(rpmX, rpmY);
 		//rpmX = (rpmX>0?1:-1)*Math.round(c.MAX_PAN_RPM/5.0*Math.exp(-3+Math.abs((rpmX/18.0))));
 		//rpmY = (rpmY>0?1:-1)*Math.round(c.MAX_TILT_RPM/5.0*Math.exp(-3+Math.abs((rpmY/18.0))));

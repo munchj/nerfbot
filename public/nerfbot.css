@@ -104,6 +104,27 @@ body {
 	border-left:1px solid white;
 }
 
+#stream_02_detect {
+	width:50%;
+	top:0;
+	right:0;
+	background-color: transparent;
+	border-left:1px solid red;
+	z-index: 10;
+}
+
+
+#stream_02_test {
+	width:640px;
+	height:480px;
+	top:0;
+	left:0;
+	background-color: transparent;
+	border:1px solid green;
+	z-index: 10;
+	display: none;
+}
+
 #stream_02_overlay {
 	position: fixed;
 	z-index: 1000;

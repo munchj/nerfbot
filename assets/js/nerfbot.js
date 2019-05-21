@@ -197,7 +197,7 @@ function turretMovePosition(directionX, directionY, positionX, positionY, speedX
 }
 
 function turretMoveAngle(directionX, directionY, angleX, angleY, speedX, speedY) {
-	//console.log("turretMoveAngle", directionX, directionY, angleX, angleY, speedX, speedY);
+	console.log("turretMoveAngle", directionX, directionY, angleX, angleY, speedX, speedY);
 	var obj = {
 		type: c.MSG_TURRET_MOVE_ANGLE,
 		directionX: directionX,
@@ -209,6 +209,8 @@ function turretMoveAngle(directionX, directionY, angleX, angleY, speedX, speedY)
 	}
 	sendCommandToTurret(JSON.stringify(obj));
 }
+
+window.turretMoveAngle = turretMoveAngle;
 
 function shoot(speed)
 {

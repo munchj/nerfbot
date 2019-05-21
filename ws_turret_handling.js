@@ -18,10 +18,7 @@ wss.on('connection', function connection(ws) {
 
 
         if(messageObject.type == c.MSG_MOVE_TURRET) {
-            //console.log(messageObject.type, messageObject.speedX, messageObject.speedY);
-            //arduinoWrapper.setDirection();
             arduinoWrapper.rotate(Math.abs(messageObject.speedX), messageObject.speedX >= 0 ? c.ARDUINO.BACKWARDS :c.ARDUINO.FORWARD, Math.abs(messageObject.speedY), messageObject.speedY >= 0 ? c.ARDUINO.BACKWARDS :c.ARDUINO.FORWARD);
-            //arduinoWrapper.rotate();
         }
         else if(messageObject.type == c.MSG_SHOOT) {
           arduinoWrapper.shoot(messageObject.speed);

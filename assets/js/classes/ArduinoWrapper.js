@@ -12,14 +12,14 @@ module.exports = class ArduinoWrapper {
         }
         
         this.serial.on("open", function() {
-            console.log('[Arduino] connected');
+            console.log('[ESP32] connected');
             var serialBuffer = "";
             serial.on('data', function(data) {
                 serialBuffer = "" + serialBuffer + data;
                 if(serialBuffer.includes("\r\n")) {
                     for(var buf of serialBuffer.split("\r\n")) {
                         if(buf) {
-                            console.log('[Arduino] ' + buf);
+                            console.log('[ESP32] ' + buf);
                         }
                         
                     }
@@ -33,7 +33,7 @@ module.exports = class ArduinoWrapper {
 
     sendMessage(object) {
         this.serial.write(JSON.stringify(object), function(err) {
-            if(err) {return console.log("[Arduino] error on write: ", err.message);}
+            if(err) {return console.log("[ESP32] error on write: ", err.message);}
          });
     }
 

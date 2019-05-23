@@ -10,7 +10,12 @@ module.exports = class KeepAliveManager {
 
     onTimeout() {
         console.log("KeepAliveManager::onTimeout");
-        this.driveManager.stop();
+        if(this.driveManager) {
+            this.driveManager.stop();
+        }
+        else {
+            console.log("!!!");
+        }
     }
 
     refresh() {

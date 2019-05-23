@@ -1,4 +1,4 @@
-const c = require('./assets/js/constants');
+const c = require('../constants');
 
 
 module.exports = class KeepAliveManager {

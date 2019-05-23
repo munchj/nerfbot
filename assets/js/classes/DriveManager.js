@@ -1,4 +1,4 @@
-const c = require('./assets/js/constants');
+const c = require('../constants');
 
 module.exports = class DriveManager {
     constructor(motorFL, motorFR, motorBL, motorBR) {

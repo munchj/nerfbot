@@ -285,7 +285,7 @@ var fcnHandleMapChangeTurret = function() {
 }
 
 var fcnHandleMapChangeShooting = function() {
-	if(keyMapShooting.space) {
+	if(keyMapShooting.shoot) {
 		shoot(currentPower);
 		magazine.dartUsed();
 	}

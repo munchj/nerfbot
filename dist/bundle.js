@@ -2149,6 +2149,7 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
   
   
   var Broadway = function(parOptions){
+    console.log("new brodwayyyy");
     this.options = parOptions || {};
     
     this.now = nowValue;
@@ -2188,7 +2189,9 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
           infos[0].finishDecoding = nowValue();
         };
         
+        
         this.onPictureDecoded(copyU8, width, height, infos);
+        
         return;
         
       };
@@ -2196,6 +2199,8 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
       if (doInfo){
         infos[0].finishDecoding = nowValue();
       };
+      
+      //HERE
       this.onPictureDecoded(buffer, width, height, infos);
     }.bind(this)]);
 
@@ -2781,13 +2786,12 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
           if (e.data.options.reuseMemory){
             reuseMemory = true;
             decoder.onPictureDecoded = function (buffer, width, height, infos) {
-              
               //var buf = getMem();
 
               // buffer needs to be copied because we give up ownership
               var copyU8 = new Uint8Array(getMem(buffer.length));
               copyU8.set( buffer, 0, buffer.length );
-
+              
               postMessage({
                 buf: copyU8.buffer, 
                 length: buffer.length,
@@ -2807,7 +2811,7 @@ function A(a){a&&(p.print(a),p.fa(a));H=i;d("abort() at "+Fa()+"\nIf this abort(
               // buffer needs to be copied because we give up ownership
               var copyU8 = new Uint8Array(buffer.length);
               copyU8.set( buffer, 0, buffer.length );
-
+                
               postMessage({
                 buf: copyU8.buffer, 
                 length: buffer.length,
@@ -3280,6 +3284,7 @@ var YUVCanvas = new Class({
   },
 
   decode : function (buffer, width, height) {
+    //console.log("yuv");
     if (!buffer)
       return;
 
@@ -3407,23 +3412,15 @@ var YUVWebGLCanvas = new Class({
     if (!buffer)
       return;
 
-   
-    
-    
-    
     var lumaSize = width * height;
     var chromaSize = lumaSize >> 2;
-    var luma = buffer.subarray(0, lumaSize);
 
-    this.YTexture.fill(luma);
-   
-    this.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
-    this.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
+    this.YTexture.fill(buffer.subarray(0, lumaSize));
+    //this.UTexture.fill(buffer.subarray(lumaSize, lumaSize + chromaSize));
+    //this.VTexture.fill(buffer.subarray(lumaSize + chromaSize, lumaSize + 2 * chromaSize));
     this.drawScene();
-
-    window.buffer = buffer;
-
-
+    
+    
   },
 
   toString: function() {
@@ -17694,7 +17691,7 @@ tracking.ViolaJones.classifiers.face=new Float64Array([20,20,.822689414024353,3,
   tracking.trackImg_ = function(element, tracker) {
     var width = element.width;
     var height = element.height;
-    var canvas = document.createElement('canvas');
+    var canvas = document.createElement('2d');
 
     canvas.width = width;
     canvas.height = height;

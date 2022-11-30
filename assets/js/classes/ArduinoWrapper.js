@@ -1,10 +1,10 @@
 const c = require('../constants');
-const SerialPort = require('serialport');
+const {SerialPort} = require('serialport');
 
 
 module.exports = class ArduinoWrapper {
     constructor(port) {
-        this.serial = new SerialPort(port, {baudRate: 115200});
+        this.serial = new SerialPort({path: port, baudRate: 115200});
         var serial = this.serial;
         this.serialBuffer = "";
         this.lastObject = {
